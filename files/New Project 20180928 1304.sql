@@ -1,0 +1,5413 @@
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version	5.5.1-m2-community
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+--
+-- Create schema dbregcivil
+--
+
+CREATE DATABASE IF NOT EXISTS dbregcivil;
+USE dbregcivil;
+
+--
+-- Definition of table `apoderado`
+--
+
+DROP TABLE IF EXISTS `apoderado`;
+CREATE TABLE `apoderado` (
+  `idapoderado` int(11) NOT NULL AUTO_INCREMENT,
+  `nom_apo` varchar(20) NOT NULL,
+  `genero` varchar(20) NOT NULL,
+  PRIMARY KEY (`idapoderado`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `apoderado`
+--
+
+/*!40000 ALTER TABLE `apoderado` DISABLE KEYS */;
+INSERT INTO `apoderado` (`idapoderado`,`nom_apo`,`genero`) VALUES 
+ (1,'NINGUNO','MASCULINO'),
+ (2,'HIJO','MASCULINO'),
+ (3,'HIJA','FEMENINO'),
+ (4,'PADRE','MASCULINO'),
+ (5,'MADRE','FEMENINO'),
+ (6,'TIO','MASCULINO'),
+ (7,'TIA','FEMENINO'),
+ (8,'ABUELO','MASCULINO'),
+ (9,'ABUELA','FEMENINO');
+/*!40000 ALTER TABLE `apoderado` ENABLE KEYS */;
+
+
+--
+-- Definition of table `aporegistro`
+--
+
+DROP TABLE IF EXISTS `aporegistro`;
+CREATE TABLE `aporegistro` (
+  `idaporegistro` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `idapoderado` int(11) NOT NULL,
+  `idtipo_reg` int(11) NOT NULL,
+  PRIMARY KEY (`idaporegistro`),
+  KEY `FK_aporegistro_1` (`idapoderado`),
+  KEY `FK_aporegistro_2` (`idtipo_reg`),
+  CONSTRAINT `FK_aporegistro_1` FOREIGN KEY (`idapoderado`) REFERENCES `apoderado` (`idapoderado`),
+  CONSTRAINT `FK_aporegistro_2` FOREIGN KEY (`idtipo_reg`) REFERENCES `tipo_reg` (`idtipo_reg`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `aporegistro`
+--
+
+/*!40000 ALTER TABLE `aporegistro` DISABLE KEYS */;
+INSERT INTO `aporegistro` (`idaporegistro`,`idapoderado`,`idtipo_reg`) VALUES 
+ (1,4,1),
+ (2,5,1),
+ (3,2,3),
+ (4,3,3),
+ (5,4,3),
+ (6,5,3),
+ (7,6,3);
+/*!40000 ALTER TABLE `aporegistro` ENABLE KEYS */;
+
+
+--
+-- Definition of table `archivo`
+--
+
+DROP TABLE IF EXISTS `archivo`;
+CREATE TABLE `archivo` (
+  `idarchivo` int(11) NOT NULL AUTO_INCREMENT,
+  `fecsub` date NOT NULL,
+  `hrasub` time NOT NULL,
+  `directorio` varchar(250) NOT NULL,
+  `idstand` int(11) NOT NULL,
+  `idregistro` int(11) NOT NULL,
+  `idtipo_doc` int(11) NOT NULL,
+  `estado` char(1) NOT NULL,
+  PRIMARY KEY (`idarchivo`),
+  KEY `stand1_idx` (`idstand`),
+  KEY `registro1_idx` (`idregistro`),
+  KEY `tipo_doc1_idx` (`idtipo_doc`),
+  CONSTRAINT `registro1` FOREIGN KEY (`idregistro`) REFERENCES `registro` (`idregistro`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `stand1` FOREIGN KEY (`idstand`) REFERENCES `stand` (`idstand`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tipo_doc1` FOREIGN KEY (`idtipo_doc`) REFERENCES `tipo_doc` (`idtipo_doc`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `archivo`
+--
+
+/*!40000 ALTER TABLE `archivo` DISABLE KEYS */;
+INSERT INTO `archivo` (`idarchivo`,`fecsub`,`hrasub`,`directorio`,`idstand`,`idregistro`,`idtipo_doc`,`estado`) VALUES 
+ (1,'2018-02-05','09:24:01','/Frontal_01010101_05022018.jpg',1,1,1,'0'),
+ (2,'2018-02-05','09:24:02','/Posterior_01010101_05022018.jpg',1,1,1,'0');
+/*!40000 ALTER TABLE `archivo` ENABLE KEYS */;
+
+
+--
+-- Definition of table `departamento`
+--
+
+DROP TABLE IF EXISTS `departamento`;
+CREATE TABLE `departamento` (
+  `iddepartamento` char(6) NOT NULL,
+  `nomdep` varchar(45) NOT NULL,
+  PRIMARY KEY (`iddepartamento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `departamento`
+--
+
+/*!40000 ALTER TABLE `departamento` DISABLE KEYS */;
+INSERT INTO `departamento` (`iddepartamento`,`nomdep`) VALUES 
+ ('01','AMAZONAS'),
+ ('02','ANCASH'),
+ ('03','APURIMAC'),
+ ('04','AREQUIPA'),
+ ('05','AYACUCHO'),
+ ('06','CAJAMARCA'),
+ ('07','PROV. CONST. DEL CALLAO'),
+ ('08','CUSCO'),
+ ('09','HUANCAVELICA'),
+ ('10','HUANUCO'),
+ ('11','ICA'),
+ ('12','JUNIN'),
+ ('13','LA LIBERTAD'),
+ ('14','LAMBAYEQUE'),
+ ('15','LIMA'),
+ ('16','LORETO'),
+ ('17','MADRE DE DIOS'),
+ ('18','MOQUEGUA'),
+ ('19','PASCO'),
+ ('20','PIURA'),
+ ('21','PUNO'),
+ ('22','SAN MARTIN'),
+ ('23','TACNA'),
+ ('24','TUMBES'),
+ ('25','UCAYALI');
+/*!40000 ALTER TABLE `departamento` ENABLE KEYS */;
+
+
+--
+-- Definition of table `detalle_libro`
+--
+
+DROP TABLE IF EXISTS `detalle_libro`;
+CREATE TABLE `detalle_libro` (
+  `iddetalle_libro` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `idtipo_reg` int(11) NOT NULL,
+  `idstand` int(11) NOT NULL,
+  PRIMARY KEY (`iddetalle_libro`),
+  KEY `FK_detalle_libro_1` (`idtipo_reg`),
+  KEY `FK_detalle_libro_2` (`idstand`),
+  CONSTRAINT `FK_detalle_libro_1` FOREIGN KEY (`idtipo_reg`) REFERENCES `tipo_reg` (`idtipo_reg`),
+  CONSTRAINT `FK_detalle_libro_2` FOREIGN KEY (`idstand`) REFERENCES `stand` (`idstand`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `detalle_libro`
+--
+
+/*!40000 ALTER TABLE `detalle_libro` DISABLE KEYS */;
+INSERT INTO `detalle_libro` (`iddetalle_libro`,`idtipo_reg`,`idstand`) VALUES 
+ (1,1,1),
+ (2,2,2),
+ (3,3,3);
+/*!40000 ALTER TABLE `detalle_libro` ENABLE KEYS */;
+
+
+--
+-- Definition of table `detalle_permiso`
+--
+
+DROP TABLE IF EXISTS `detalle_permiso`;
+CREATE TABLE `detalle_permiso` (
+  `iddetalle_permiso` int(11) NOT NULL AUTO_INCREMENT,
+  `idusuario` int(11) NOT NULL,
+  `idpermiso` int(11) NOT NULL,
+  PRIMARY KEY (`iddetalle_permiso`),
+  KEY `FK_detalle_permiso_1` (`idusuario`),
+  KEY `FK_detalle_permiso_2` (`idpermiso`),
+  CONSTRAINT `FK_detalle_permiso_1` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`),
+  CONSTRAINT `FK_detalle_permiso_2` FOREIGN KEY (`idpermiso`) REFERENCES `permiso` (`idpermiso`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `detalle_permiso`
+--
+
+/*!40000 ALTER TABLE `detalle_permiso` DISABLE KEYS */;
+INSERT INTO `detalle_permiso` (`iddetalle_permiso`,`idusuario`,`idpermiso`) VALUES 
+ (1,1,11),
+ (2,1,1),
+ (3,1,2),
+ (4,1,3),
+ (5,1,4),
+ (6,1,5),
+ (7,1,6),
+ (8,1,7),
+ (9,1,8),
+ (10,1,9),
+ (11,1,10),
+ (12,1,12),
+ (13,1,13),
+ (14,1,14),
+ (15,1,15),
+ (16,1,16),
+ (17,1,17),
+ (18,1,18),
+ (19,2,4);
+/*!40000 ALTER TABLE `detalle_permiso` ENABLE KEYS */;
+
+
+--
+-- Definition of table `detalle_ubicacion`
+--
+
+DROP TABLE IF EXISTS `detalle_ubicacion`;
+CREATE TABLE `detalle_ubicacion` (
+  `iddetalle_ubicacion` int(11) NOT NULL AUTO_INCREMENT,
+  `iddistrito` char(6) NOT NULL,
+  `iddetRegistro` int(11) NOT NULL,
+  PRIMARY KEY (`iddetalle_ubicacion`),
+  KEY `distrito1_idx` (`iddistrito`),
+  KEY `DetRegistro1_idx` (`iddetRegistro`),
+  CONSTRAINT `DetRegistro1` FOREIGN KEY (`iddetRegistro`) REFERENCES `detregistro` (`iddetRegistro`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `distrito1` FOREIGN KEY (`iddistrito`) REFERENCES `distrito` (`iddistrito`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `detalle_ubicacion`
+--
+
+/*!40000 ALTER TABLE `detalle_ubicacion` DISABLE KEYS */;
+INSERT INTO `detalle_ubicacion` (`iddetalle_ubicacion`,`iddistrito`,`iddetRegistro`) VALUES 
+ (1,'P0252',1),
+ (2,'P0108',3),
+ (3,'P0102',6),
+ (4,'P0127',8),
+ (5,'P0147',10),
+ (6,'P0088',12),
+ (7,'P0088',13),
+ (8,'P0158',14),
+ (9,'P0158',15),
+ (10,'P0141',16),
+ (11,'P0141',17),
+ (12,'P0169',18),
+ (13,'P0169',19),
+ (14,'P0084',20),
+ (15,'P0084',21),
+ (16,'P0016',22),
+ (17,'P0084',24);
+/*!40000 ALTER TABLE `detalle_ubicacion` ENABLE KEYS */;
+
+
+--
+-- Definition of table `detregistro`
+--
+
+DROP TABLE IF EXISTS `detregistro`;
+CREATE TABLE `detregistro` (
+  `iddetRegistro` int(11) NOT NULL AUTO_INCREMENT,
+  `idregistro` int(11) NOT NULL,
+  `idpersona` int(11) NOT NULL,
+  `idapoderado` int(11) NOT NULL,
+  PRIMARY KEY (`iddetRegistro`),
+  KEY `FK_detRegistro_1` (`idregistro`),
+  KEY `FK_detRegistro_2` (`idpersona`),
+  KEY `FK_detRegistro_3` (`idapoderado`),
+  CONSTRAINT `FK_detRegistro_1` FOREIGN KEY (`idregistro`) REFERENCES `registro` (`idregistro`),
+  CONSTRAINT `FK_detRegistro_2` FOREIGN KEY (`idpersona`) REFERENCES `persona` (`idpersona`),
+  CONSTRAINT `FK_detRegistro_3` FOREIGN KEY (`idapoderado`) REFERENCES `apoderado` (`idapoderado`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `detregistro`
+--
+
+/*!40000 ALTER TABLE `detregistro` DISABLE KEYS */;
+INSERT INTO `detregistro` (`iddetRegistro`,`idregistro`,`idpersona`,`idapoderado`) VALUES 
+ (1,1,2,1),
+ (2,1,3,4),
+ (3,2,4,1),
+ (4,2,5,4),
+ (5,2,6,5),
+ (6,3,7,1),
+ (7,3,8,5),
+ (8,4,9,1),
+ (9,4,10,5),
+ (10,5,11,1),
+ (11,5,12,4),
+ (12,6,13,1),
+ (13,6,14,1),
+ (14,7,15,1),
+ (15,7,16,1),
+ (16,8,17,1),
+ (17,8,18,1),
+ (18,9,19,1),
+ (19,9,20,1),
+ (20,10,4,1),
+ (21,10,7,1),
+ (22,11,21,1),
+ (23,11,22,3),
+ (24,12,23,1),
+ (25,12,24,2);
+/*!40000 ALTER TABLE `detregistro` ENABLE KEYS */;
+
+
+--
+-- Definition of table `directorio`
+--
+
+DROP TABLE IF EXISTS `directorio`;
+CREATE TABLE `directorio` (
+  `iddirectorio` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ruta_dir` varchar(100) NOT NULL,
+  PRIMARY KEY (`iddirectorio`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `directorio`
+--
+
+/*!40000 ALTER TABLE `directorio` DISABLE KEYS */;
+INSERT INTO `directorio` (`iddirectorio`,`ruta_dir`) VALUES 
+ (1,'C:/REGISTROCIVIL');
+/*!40000 ALTER TABLE `directorio` ENABLE KEYS */;
+
+
+--
+-- Definition of table `distrito`
+--
+
+DROP TABLE IF EXISTS `distrito`;
+CREATE TABLE `distrito` (
+  `iddistrito` char(6) NOT NULL,
+  `nomdist` varchar(45) NOT NULL,
+  `idprovincia` char(6) NOT NULL,
+  PRIMARY KEY (`iddistrito`),
+  KEY `provincia1_idx` (`idprovincia`),
+  CONSTRAINT `provincia1` FOREIGN KEY (`idprovincia`) REFERENCES `provincia` (`idprovincia`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `distrito`
+--
+
+/*!40000 ALTER TABLE `distrito` DISABLE KEYS */;
+INSERT INTO `distrito` (`iddistrito`,`nomdist`,`idprovincia`) VALUES 
+ ('P0001','CHACHAPOYAS','0101'),
+ ('P0002','ASUNCION','0101'),
+ ('P0003','BALSAS','0101'),
+ ('P0004','CHETO','0101'),
+ ('P0005','CHILIQUIN','0101'),
+ ('P0006','CHUQUIBAMBA','0101'),
+ ('P0007','GRANADA','0101'),
+ ('P0008','HUANCAS','0101'),
+ ('P0009','LA JALCA','0101'),
+ ('P0010','LEIMEBAMBA','0101'),
+ ('P0011','LEVANTO','0101'),
+ ('P0012','MAGDALENA','0101'),
+ ('P0013','MARISCAL CASTILLA','0101'),
+ ('P0014','MOLINOPAMPA','0101'),
+ ('P0015','MONTEVIDEO','0101'),
+ ('P0016','OLLEROS','0101'),
+ ('P0017','QUINJALCA','0101'),
+ ('P0018','SAN FRANCISCO DE DAGUAS','0101'),
+ ('P0019','SAN ISIDRO DE MAINO','0101'),
+ ('P0020','SOLOCO','0101'),
+ ('P0021','SONCHE','0101'),
+ ('P0022','LA PECA','0102'),
+ ('P0023','ARAMANGO','0102'),
+ ('P0024','COPALLIN','0102'),
+ ('P0025','EL PARCO','0102'),
+ ('P0026','IMAZA','0102'),
+ ('P0027','JUMBILLA','0103'),
+ ('P0028','CHISQUILLA','0103'),
+ ('P0029','CHURUJA','0103'),
+ ('P0030','COROSHA','0103'),
+ ('P0031','CUISPES','0103'),
+ ('P0032','FLORIDA','0103'),
+ ('P0033','JAZAN','0103'),
+ ('P0034','RECTA','0103'),
+ ('P0035','SAN CARLOS','0103'),
+ ('P0036','SHIPASBAMBA','0103'),
+ ('P0037','VALERA','0103'),
+ ('P0038','YAMBRASBAMBA','0103'),
+ ('P0039','NIEVA','0104'),
+ ('P0040','EL CENEPA','0104'),
+ ('P0041','RIO SANTIAGO','0104'),
+ ('P0042','LAMUD','0105'),
+ ('P0043','CAMPORREDONDO','0105'),
+ ('P0044','COCABAMBA','0105'),
+ ('P0045','COLCAMAR','0105'),
+ ('P0046','CONILA','0105'),
+ ('P0047','INGUILPATA','0105'),
+ ('P0048','LONGUITA','0105'),
+ ('P0049','LONYA CHICO','0105'),
+ ('P0050','LUYA','0105'),
+ ('P0051','LUYA VIEJO','0105'),
+ ('P0052','MARIA','0105'),
+ ('P0053','OCALLI','0105'),
+ ('P0054','OCUMAL','0105'),
+ ('P0055','PISUQUIA','0105'),
+ ('P0056','PROVIDENCIA','0105'),
+ ('P0057','SAN CRISTOBAL','0105'),
+ ('P0058','SAN FRANCISCO DEL YESO','0105'),
+ ('P0059','SAN JERONIMO','0105'),
+ ('P0060','SAN JUAN DE LOPECANCHA','0105'),
+ ('P0061','SANTA CATALINA','0105'),
+ ('P0062','SANTO TOMAS','0105'),
+ ('P0063','TINGO','0105'),
+ ('P0064','TRITA','0105'),
+ ('P0065','SAN NICOLAS','0106'),
+ ('P0066','CHIRIMOTO','0106'),
+ ('P0067','COCHAMAL','0106'),
+ ('P0068','HUAMBO','0106'),
+ ('P0069','LIMABAMBA','0106'),
+ ('P0070','LONGAR','0106'),
+ ('P0071','MARISCAL BENAVIDES','0106'),
+ ('P0072','MILPUC','0106'),
+ ('P0073','OMIA','0106'),
+ ('P0074','SANTA ROSA','0106'),
+ ('P0075','TOTORA','0106'),
+ ('P0076','VISTA ALEGRE','0106'),
+ ('P0077','BAGUA GRANDE','0107'),
+ ('P0078','CAJARURO','0107'),
+ ('P0079','CUMBA','0107'),
+ ('P0080','EL MILAGRO','0107'),
+ ('P0081','JAMALCA','0107'),
+ ('P0082','LONYA GRANDE','0107'),
+ ('P0083','YAMON','0107'),
+ ('P0084','HUARAZ','0201'),
+ ('P0085','COCHABAMBA','0201'),
+ ('P0086','COLCABAMBA','0201'),
+ ('P0087','HUANCHAY','0201'),
+ ('P0088','INDEPENDENCIA','0201'),
+ ('P0089','JANGAS','0201'),
+ ('P0090','LA LIBERTAD','0201'),
+ ('P0091','OLLEROS','0201'),
+ ('P0092','PAMPAS','0201'),
+ ('P0093','PARIACOTO','0201'),
+ ('P0094','PIRA','0201'),
+ ('P0095','TARICA','0201'),
+ ('P0096','AIJA','0202'),
+ ('P0097','CORIS','0202'),
+ ('P0098','HUACLLAN','0202'),
+ ('P0099','LA MERCED','0202'),
+ ('P0100','SUCCHA','0202'),
+ ('P0101','LLAMELLIN','0203'),
+ ('P0102','ACZO','0203'),
+ ('P0103','CHACCHO','0203'),
+ ('P0104','CHINGAS','0203'),
+ ('P0105','MIRGAS','0203'),
+ ('P0106','SAN JUAN DE RONTOY','0203'),
+ ('P0107','CHACAS','0204'),
+ ('P0108','ACOCHACA','0204'),
+ ('P0109','CHIQUIAN','0205'),
+ ('P0110','ABELARDO PARDO LEZAMETA','0205'),
+ ('P0111','ANTONIO RAYMONDI','0205'),
+ ('P0112','AQUIA','0205'),
+ ('P0113','CAJACAY','0205'),
+ ('P0114','CANIS','0205'),
+ ('P0115','COLQUIOC','0205'),
+ ('P0116','HUALLANCA','0205'),
+ ('P0117','HUASTA','0205'),
+ ('P0118','HUAYLLACAYAN','0205'),
+ ('P0119','LA PRIMAVERA','0205'),
+ ('P0120','MANGAS','0205'),
+ ('P0121','PACLLON','0205'),
+ ('P0122','SAN MIGUEL DE CORPANQUI','0205'),
+ ('P0123','TICLLOS','0205'),
+ ('P0124','CARHUAZ','0206'),
+ ('P0125','ACOPAMPA','0206'),
+ ('P0126','AMASHCA','0206'),
+ ('P0127','ANTA','0206'),
+ ('P0128','ATAQUERO','0206'),
+ ('P0129','MARCARA','0206'),
+ ('P0130','PARIAHUANCA','0206'),
+ ('P0131','SAN MIGUEL DE ACO','0206'),
+ ('P0132','SHILLA','0206'),
+ ('P0133','TINCO','0206'),
+ ('P0134','YUNGAR','0206'),
+ ('P0135','SAN LUIS','0207'),
+ ('P0136','SAN NICOLAS','0207'),
+ ('P0137','YAUYA','0207'),
+ ('P0138','CASMA','0208'),
+ ('P0139','BUENA VISTA ALTA','0208'),
+ ('P0140','COMANDANTE NOEL','0208'),
+ ('P0141','YAUTAN','0208'),
+ ('P0142','CORONGO','0209'),
+ ('P0143','ACO','0209'),
+ ('P0144','BAMBAS','0209'),
+ ('P0145','CUSCA','0209'),
+ ('P0146','LA PAMPA','0209'),
+ ('P0147','YANAC','0209'),
+ ('P0148','YUPAN','0209'),
+ ('P0149','HUARI','0210'),
+ ('P0150','ANRA','0210'),
+ ('P0151','CAJAY','0210'),
+ ('P0152','CHAVIN DE HUANTAR','0210'),
+ ('P0153','HUACACHI','0210'),
+ ('P0154','HUACCHIS','0210'),
+ ('P0155','HUACHIS','0210'),
+ ('P0156','HUANTAR','0210'),
+ ('P0157','MASIN','0210'),
+ ('P0158','PAUCAS','0210'),
+ ('P0159','PONTO','0210'),
+ ('P0160','RAHUAPAMPA','0210'),
+ ('P0161','RAPAYAN','0210'),
+ ('P0162','SAN MARCOS','0210'),
+ ('P0163','SAN PEDRO DE CHANA','0210'),
+ ('P0164','UCO','0210'),
+ ('P0165','HUARMEY','0211'),
+ ('P0166','COCHAPETI','0211'),
+ ('P0167','CULEBRAS','0211'),
+ ('P0168','HUAYAN','0211'),
+ ('P0169','MALVAS','0211'),
+ ('P0170','CARAZ','0212'),
+ ('P0171','HUALLANCA','0212'),
+ ('P0172','HUATA','0212'),
+ ('P0173','HUAYLAS','0212'),
+ ('P0174','MATO','0212'),
+ ('P0175','PAMPAROMAS','0212'),
+ ('P0176','PUEBLO LIBRE','0212'),
+ ('P0177','SANTA CRUZ','0212'),
+ ('P0178','SANTO TORIBIO','0212'),
+ ('P0179','YURACMARCA','0212'),
+ ('P0180','PISCOBAMBA','0213'),
+ ('P0181','CASCA','0213'),
+ ('P0182','ELEAZAR GUZMAN BARRON','0213'),
+ ('P0183','FIDEL OLIVAS ESCUDERO','0213'),
+ ('P0184','LLAMA','0213'),
+ ('P0185','LLUMPA','0213'),
+ ('P0186','LUCMA','0213'),
+ ('P0187','MUSGA','0213'),
+ ('P0188','OCROS','0214'),
+ ('P0189','ACAS','0214'),
+ ('P0190','CAJAMARQUILLA','0214'),
+ ('P0191','CARHUAPAMPA','0214'),
+ ('P0192','COCHAS','0214'),
+ ('P0193','CONGAS','0214'),
+ ('P0194','LLIPA','0214'),
+ ('P0195','SAN CRISTOBAL DE RAJAN','0214'),
+ ('P0196','SAN PEDRO','0214'),
+ ('P0197','SANTIAGO DE CHILCAS','0214'),
+ ('P0198','CABANA','0215'),
+ ('P0199','BOLOGNESI','0215'),
+ ('P0200','CONCHUCOS','0215'),
+ ('P0201','HUACASCHUQUE','0215'),
+ ('P0202','HUANDOVAL','0215'),
+ ('P0203','LACABAMBA','0215'),
+ ('P0204','LLAPO','0215'),
+ ('P0205','PALLASCA','0215'),
+ ('P0206','PAMPAS','0215'),
+ ('P0207','SANTA ROSA','0215'),
+ ('P0208','TAUCA','0215'),
+ ('P0209','POMABAMBA','0216'),
+ ('P0210','HUAYLLAN','0216'),
+ ('P0211','PAROBAMBA','0216'),
+ ('P0212','QUINUABAMBA','0216'),
+ ('P0213','RECUAY','0217'),
+ ('P0214','CATAC','0217'),
+ ('P0215','COTAPARACO','0217'),
+ ('P0216','HUAYLLAPAMPA','0217'),
+ ('P0217','LLACLLIN','0217'),
+ ('P0218','MARCA','0217'),
+ ('P0219','PAMPAS CHICO','0217'),
+ ('P0220','PARARIN','0217'),
+ ('P0221','TAPACOCHA','0217'),
+ ('P0222','TICAPAMPA','0217'),
+ ('P0223','CHIMBOTE','0218'),
+ ('P0224','CACERES DEL PERU','0218'),
+ ('P0225','COISHCO','0218'),
+ ('P0226','MACATE','0218'),
+ ('P0227','MORO','0218'),
+ ('P0228','NEPEÑA','0218'),
+ ('P0229','SAMANCO','0218'),
+ ('P0230','SANTA','0218'),
+ ('P0231','NUEVO CHIMBOTE','0218'),
+ ('P0232','SIHUAS','0219'),
+ ('P0233','ACOBAMBA','0219'),
+ ('P0234','ALFONSO UGARTE','0219'),
+ ('P0235','CASHAPAMPA','0219'),
+ ('P0236','CHINGALPO','0219'),
+ ('P0237','HUAYLLABAMBA','0219'),
+ ('P0238','QUICHES','0219'),
+ ('P0239','RAGASH','0219'),
+ ('P0240','SAN JUAN','0219'),
+ ('P0241','SICSIBAMBA','0219'),
+ ('P0242','YUNGAY','0220'),
+ ('P0243','CASCAPARA','0220'),
+ ('P0244','MANCOS','0220'),
+ ('P0245','MATACOTO','0220'),
+ ('P0246','QUILLO','0220'),
+ ('P0247','RANRAHIRCA','0220'),
+ ('P0248','SHUPLUY','0220'),
+ ('P0249','YANAMA','0220'),
+ ('P0250','ABANCAY','0301'),
+ ('P0251','CHACOCHE','0301'),
+ ('P0252','CIRCA','0301'),
+ ('P0253','CURAHUASI','0301'),
+ ('P0254','HUANIPACA','0301'),
+ ('P0255','LAMBRAMA','0301'),
+ ('P0256','PICHIRHUA','0301'),
+ ('P0257','SAN PEDRO DE CACHORA','0301'),
+ ('P0258','TAMBURCO','0301'),
+ ('P0259','ANDAHUAYLAS','0302'),
+ ('P0260','ANDARAPA','0302'),
+ ('P0261','CHIARA','0302'),
+ ('P0262','HUANCARAMA','0302'),
+ ('P0263','HUANCARAY','0302'),
+ ('P0264','HUAYANA','0302'),
+ ('P0265','KISHUARA','0302'),
+ ('P0266','PACOBAMBA','0302'),
+ ('P0267','PACUCHA','0302'),
+ ('P0268','PAMPACHIRI','0302'),
+ ('P0269','POMACOCHA','0302'),
+ ('P0270','SAN ANTONIO DE CACHI','0302'),
+ ('P0271','SAN JERONIMO','0302'),
+ ('P0272','SAN MIGUEL DE CHACCRAMPA','0302'),
+ ('P0273','SANTA MARIA DE CHICMO','0302'),
+ ('P0274','TALAVERA','0302'),
+ ('P0275','TUMAY HUARACA','0302'),
+ ('P0276','TURPO','0302'),
+ ('P0277','KAQUIABAMBA','0302'),
+ ('P0278','ANTABAMBA','0303'),
+ ('P0279','EL ORO','0303'),
+ ('P0280','HUAQUIRCA','0303'),
+ ('P0281','JUAN ESPINOZA MEDRANO','0303'),
+ ('P0282','OROPESA','0303'),
+ ('P0283','PACHACONAS','0303'),
+ ('P0284','SABAINO','0303'),
+ ('P0285','CHALHUANCA','0304'),
+ ('P0286','CAPAYA','0304'),
+ ('P0287','CARAYBAMBA','0304'),
+ ('P0288','CHAPIMARCA','0304'),
+ ('P0289','COLCABAMBA','0304'),
+ ('P0290','COTARUSE','0304'),
+ ('P0291','HUAYLLO','0304'),
+ ('P0292','JUSTO APU SAHUARAURA','0304'),
+ ('P0293','LUCRE','0304'),
+ ('P0294','POCOHUANCA','0304'),
+ ('P0295','SAN JUAN DE CHACÑA','0304'),
+ ('P0296','SAÑAYCA','0304'),
+ ('P0297','SORAYA','0304'),
+ ('P0298','TAPAIRIHUA','0304'),
+ ('P0299','TINTAY','0304'),
+ ('P0300','TORAYA','0304'),
+ ('P0301','YANACA','0304'),
+ ('P0302','TAMBOBAMBA','0305'),
+ ('P0303','COTABAMBAS','0305'),
+ ('P0304','COYLLURQUI','0305'),
+ ('P0305','HAQUIRA','0305'),
+ ('P0306','MARA','0305'),
+ ('P0307','CHALLHUAHUACHO','0305'),
+ ('P0308','CHINCHEROS','0306'),
+ ('P0309','ANCO_HUALLO','0306'),
+ ('P0310','COCHARCAS','0306'),
+ ('P0311','HUACCANA','0306'),
+ ('P0312','OCOBAMBA','0306'),
+ ('P0313','ONGOY','0306'),
+ ('P0314','URANMARCA','0306'),
+ ('P0315','RANRACANCHA','0306'),
+ ('P0316','CHUQUIBAMBILLA','0307'),
+ ('P0317','CURPAHUASI','0307'),
+ ('P0318','GAMARRA','0307'),
+ ('P0319','HUAYLLATI','0307'),
+ ('P0320','MAMARA','0307'),
+ ('P0321','MICAELA BASTIDAS','0307'),
+ ('P0322','PATAYPAMPA','0307'),
+ ('P0323','PROGRESO','0307'),
+ ('P0324','SAN ANTONIO','0307'),
+ ('P0325','SANTA ROSA','0307'),
+ ('P0326','TURPAY','0307'),
+ ('P0327','VILCABAMBA','0307'),
+ ('P0328','VIRUNDO','0307'),
+ ('P0329','CURASCO','0307'),
+ ('P0330','AREQUIPA','0401'),
+ ('P0331','ALTO SELVA ALEGRE','0401'),
+ ('P0332','CAYMA','0401'),
+ ('P0333','CERRO COLORADO','0401'),
+ ('P0334','CHARACATO','0401'),
+ ('P0335','CHIGUATA','0401'),
+ ('P0336','JACOBO HUNTER','0401'),
+ ('P0337','LA JOYA','0401'),
+ ('P0338','MARIANO MELGAR','0401'),
+ ('P0339','MIRAFLORES','0401'),
+ ('P0340','MOLLEBAYA','0401'),
+ ('P0341','PAUCARPATA','0401'),
+ ('P0342','POCSI','0401'),
+ ('P0343','POLOBAYA','0401'),
+ ('P0344','QUEQUEÑA','0401'),
+ ('P0345','SABANDIA','0401'),
+ ('P0346','SACHACA','0401'),
+ ('P0347','SAN JUAN DE SIGUAS','0401'),
+ ('P0348','SAN JUAN DE TARUCANI','0401'),
+ ('P0349','SANTA ISABEL DE SIGUAS','0401'),
+ ('P0350','SANTA RITA DE SIGUAS','0401'),
+ ('P0351','SOCABAYA','0401'),
+ ('P0352','TIABAYA','0401'),
+ ('P0353','UCHUMAYO','0401'),
+ ('P0354','VITOR','0401'),
+ ('P0355','YANAHUARA','0401'),
+ ('P0356','YARABAMBA','0401'),
+ ('P0357','YURA','0401'),
+ ('P0358','JOSE LUIS BUSTAMANTE Y RIVERO','0401'),
+ ('P0359','CAMANA','0402'),
+ ('P0360','JOSE MARIA QUIMPER','0402'),
+ ('P0361','MARIANO NICOLAS VALCARCEL','0402'),
+ ('P0362','MARISCAL CACERES','0402'),
+ ('P0363','NICOLAS DE PIEROLA','0402'),
+ ('P0364','OCOÑA','0402'),
+ ('P0365','QUILCA','0402'),
+ ('P0366','SAMUEL PASTOR','0402'),
+ ('P0367','CARAVELI','0403'),
+ ('P0368','ACARI','0403'),
+ ('P0369','ATICO','0403'),
+ ('P0370','ATIQUIPA','0403'),
+ ('P0371','BELLA UNION','0403'),
+ ('P0372','CAHUACHO','0403'),
+ ('P0373','CHALA','0403'),
+ ('P0374','CHAPARRA','0403'),
+ ('P0375','HUANUHUANU','0403'),
+ ('P0376','JAQUI','0403'),
+ ('P0377','LOMAS','0403'),
+ ('P0378','QUICACHA','0403'),
+ ('P0379','YAUCA','0403'),
+ ('P0380','APLAO','0404'),
+ ('P0381','ANDAGUA','0404'),
+ ('P0382','AYO','0404'),
+ ('P0383','CHACHAS','0404'),
+ ('P0384','CHILCAYMARCA','0404'),
+ ('P0385','CHOCO','0404'),
+ ('P0386','HUANCARQUI','0404'),
+ ('P0387','MACHAGUAY','0404'),
+ ('P0388','ORCOPAMPA','0404'),
+ ('P0389','PAMPACOLCA','0404'),
+ ('P0390','TIPAN','0404'),
+ ('P0391','UÑON','0404'),
+ ('P0392','URACA','0404'),
+ ('P0393','VIRACO','0404'),
+ ('P0394','CHIVAY','0405'),
+ ('P0395','ACHOMA','0405'),
+ ('P0396','CABANACONDE','0405'),
+ ('P0397','CALLALLI','0405'),
+ ('P0398','CAYLLOMA','0405'),
+ ('P0399','COPORAQUE','0405'),
+ ('P0400','HUAMBO','0405'),
+ ('P0401','HUANCA','0405'),
+ ('P0402','ICHUPAMPA','0405'),
+ ('P0403','LARI','0405'),
+ ('P0404','LLUTA','0405'),
+ ('P0405','MACA','0405'),
+ ('P0406','MADRIGAL','0405'),
+ ('P0407','SAN ANTONIO DE CHUCA','0405'),
+ ('P0408','SIBAYO','0405'),
+ ('P0409','TAPAY','0405'),
+ ('P0410','TISCO','0405'),
+ ('P0411','TUTI','0405'),
+ ('P0412','YANQUE','0405'),
+ ('P0413','MAJES','0405'),
+ ('P0414','CHUQUIBAMBA','0406'),
+ ('P0415','ANDARAY','0406'),
+ ('P0416','CAYARANI','0406'),
+ ('P0417','CHICHAS','0406'),
+ ('P0418','IRAY','0406'),
+ ('P0419','RIO GRANDE','0406'),
+ ('P0420','SALAMANCA','0406'),
+ ('P0421','YANAQUIHUA','0406'),
+ ('P0422','MOLLENDO','0407'),
+ ('P0423','COCACHACRA','0407'),
+ ('P0424','DEAN VALDIVIA','0407'),
+ ('P0425','ISLAY','0407'),
+ ('P0426','MEJIA','0407'),
+ ('P0427','PUNTA DE BOMBON','0407'),
+ ('P0428','COTAHUASI','0408'),
+ ('P0429','ALCA','0408'),
+ ('P0430','CHARCANA','0408'),
+ ('P0431','HUAYNACOTAS','0408'),
+ ('P0432','PAMPAMARCA','0408'),
+ ('P0433','PUYCA','0408'),
+ ('P0434','QUECHUALLA','0408'),
+ ('P0435','SAYLA','0408'),
+ ('P0436','TAURIA','0408'),
+ ('P0437','TOMEPAMPA','0408'),
+ ('P0438','TORO','0408'),
+ ('P0439','AYACUCHO','0501'),
+ ('P0440','ACOCRO','0501'),
+ ('P0441','ACOS VINCHOS','0501'),
+ ('P0442','CARMEN ALTO','0501'),
+ ('P0443','CHIARA','0501'),
+ ('P0444','OCROS','0501'),
+ ('P0445','PACAYCASA','0501'),
+ ('P0446','QUINUA','0501'),
+ ('P0447','SAN JOSE DE TICLLAS','0501'),
+ ('P0448','SAN JUAN BAUTISTA','0501'),
+ ('P0449','SANTIAGO DE PISCHA','0501'),
+ ('P0450','SOCOS','0501'),
+ ('P0451','TAMBILLO','0501'),
+ ('P0452','VINCHOS','0501'),
+ ('P0453','JESUS NAZARENO','0501'),
+ ('P0454','CANGALLO','0502'),
+ ('P0455','CHUSCHI','0502'),
+ ('P0456','LOS MOROCHUCOS','0502'),
+ ('P0457','MARIA PARADO DE BELLIDO','0502'),
+ ('P0458','PARAS','0502'),
+ ('P0459','TOTOS','0502'),
+ ('P0460','SANCOS','0503'),
+ ('P0461','CARAPO','0503'),
+ ('P0462','SACSAMARCA','0503'),
+ ('P0463','SANTIAGO DE LUCANAMARCA','0503'),
+ ('P0464','HUANTA','0504'),
+ ('P0465','AYAHUANCO','0504'),
+ ('P0466','HUAMANGUILLA','0504'),
+ ('P0467','IGUAIN','0504'),
+ ('P0468','LURICOCHA','0504'),
+ ('P0469','SANTILLANA','0504'),
+ ('P0470','SIVIA','0504'),
+ ('P0471','LLOCHEGUA','0504'),
+ ('P0472','SAN MIGUEL','0505'),
+ ('P0473','ANCO','0505'),
+ ('P0474','AYNA','0505'),
+ ('P0475','CHILCAS','0505'),
+ ('P0476','CHUNGUI','0505'),
+ ('P0477','LUIS CARRANZA','0505'),
+ ('P0478','SANTA ROSA','0505'),
+ ('P0479','TAMBO','0505'),
+ ('P0480','PUQUIO','0506'),
+ ('P0481','AUCARA','0506'),
+ ('P0482','CABANA','0506'),
+ ('P0483','CARMEN SALCEDO','0506'),
+ ('P0484','CHAVIÑA','0506'),
+ ('P0485','CHIPAO','0506'),
+ ('P0486','HUAC-HUAS','0506'),
+ ('P0487','LARAMATE','0506'),
+ ('P0488','LEONCIO PRADO','0506'),
+ ('P0489','LLAUTA','0506'),
+ ('P0490','LUCANAS','0506'),
+ ('P0491','OCAÑA','0506'),
+ ('P0492','OTOCA','0506'),
+ ('P0493','SAISA','0506'),
+ ('P0494','SAN CRISTOBAL','0506'),
+ ('P0495','SAN JUAN','0506'),
+ ('P0496','SAN PEDRO','0506'),
+ ('P0497','SAN PEDRO DE PALCO','0506'),
+ ('P0498','SANCOS','0506'),
+ ('P0499','SANTA ANA DE HUAYCAHUACHO','0506'),
+ ('P0500','SANTA LUCIA','0506'),
+ ('P0501','CORACORA','0507'),
+ ('P0502','CHUMPI','0507'),
+ ('P0503','CORONEL CASTAÑEDA','0507'),
+ ('P0504','PACAPAUSA','0507'),
+ ('P0505','PULLO','0507'),
+ ('P0506','PUYUSCA','0507'),
+ ('P0507','SAN FRANCISCO DE RAVACAYCO','0507'),
+ ('P0508','UPAHUACHO','0507'),
+ ('P0509','PAUSA','0508'),
+ ('P0510','COLTA','0508'),
+ ('P0511','CORCULLA','0508'),
+ ('P0512','LAMPA','0508'),
+ ('P0513','MARCABAMBA','0508'),
+ ('P0514','OYOLO','0508'),
+ ('P0515','PARARCA','0508'),
+ ('P0516','SAN JAVIER DE ALPABAMBA','0508'),
+ ('P0517','SAN JOSE DE USHUA','0508'),
+ ('P0518','SARA SARA','0508'),
+ ('P0519','QUEROBAMBA','0509'),
+ ('P0520','BELEN','0509'),
+ ('P0521','CHALCOS','0509'),
+ ('P0522','CHILCAYOC','0509'),
+ ('P0523','HUACAÑA','0509'),
+ ('P0524','MORCOLLA','0509'),
+ ('P0525','PAICO','0509'),
+ ('P0526','SAN PEDRO DE LARCAY','0509'),
+ ('P0527','SAN SALVADOR DE QUIJE','0509'),
+ ('P0528','SANTIAGO DE PAUCARAY','0509'),
+ ('P0529','SORAS','0509'),
+ ('P0530','HUANCAPI','0510'),
+ ('P0531','ALCAMENCA','0510'),
+ ('P0532','APONGO','0510'),
+ ('P0533','ASQUIPATA','0510'),
+ ('P0534','CANARIA','0510'),
+ ('P0535','CAYARA','0510'),
+ ('P0536','COLCA','0510'),
+ ('P0537','HUAMANQUIQUIA','0510'),
+ ('P0538','HUANCARAYLLA','0510'),
+ ('P0539','HUAYA','0510'),
+ ('P0540','SARHUA','0510'),
+ ('P0541','VILCANCHOS','0510'),
+ ('P0542','VILCAS HUAMAN','0511'),
+ ('P0543','ACCOMARCA','0511'),
+ ('P0544','CARHUANCA','0511'),
+ ('P0545','CONCEPCION','0511'),
+ ('P0546','HUAMBALPA','0511'),
+ ('P0547','INDEPENDENCIA','0511'),
+ ('P0548','SAURAMA','0511'),
+ ('P0549','VISCHONGO','0511'),
+ ('P0550','CAJAMARCA','0601'),
+ ('P0551','ASUNCION','0601'),
+ ('P0552','CHETILLA','0601'),
+ ('P0553','COSPAN','0601'),
+ ('P0554','ENCAÑADA','0601'),
+ ('P0555','JESUS','0601'),
+ ('P0556','LLACANORA','0601'),
+ ('P0557','LOS BAÑOS DEL INCA','0601'),
+ ('P0558','MAGDALENA','0601'),
+ ('P0559','MATARA','0601'),
+ ('P0560','NAMORA','0601'),
+ ('P0561','SAN JUAN','0601'),
+ ('P0562','CAJABAMBA','0602'),
+ ('P0563','CACHACHI','0602'),
+ ('P0564','CONDEBAMBA','0602'),
+ ('P0565','SITACOCHA','0602'),
+ ('P0566','CELENDIN','0603'),
+ ('P0567','CHUMUCH','0603'),
+ ('P0568','CORTEGANA','0603'),
+ ('P0569','HUASMIN','0603'),
+ ('P0570','JORGE CHAVEZ','0603'),
+ ('P0571','JOSE GALVEZ','0603'),
+ ('P0572','MIGUEL IGLESIAS','0603'),
+ ('P0573','OXAMARCA','0603'),
+ ('P0574','SOROCHUCO','0603'),
+ ('P0575','SUCRE','0603'),
+ ('P0576','UTCO','0603'),
+ ('P0577','LA LIBERTAD DE PALLAN','0603'),
+ ('P0578','CHOTA','0604'),
+ ('P0579','ANGUIA','0604'),
+ ('P0580','CHADIN','0604'),
+ ('P0581','CHIGUIRIP','0604'),
+ ('P0582','CHIMBAN','0604'),
+ ('P0583','CHOROPAMPA','0604'),
+ ('P0584','COCHABAMBA','0604'),
+ ('P0585','CONCHAN','0604'),
+ ('P0586','HUAMBOS','0604'),
+ ('P0587','LAJAS','0604'),
+ ('P0588','LLAMA','0604'),
+ ('P0589','MIRACOSTA','0604'),
+ ('P0590','PACCHA','0604'),
+ ('P0591','PION','0604'),
+ ('P0592','QUEROCOTO','0604'),
+ ('P0593','SAN JUAN DE LICUPIS','0604'),
+ ('P0594','TACABAMBA','0604'),
+ ('P0595','TOCMOCHE','0604'),
+ ('P0596','CHALAMARCA','0604'),
+ ('P0597','CONTUMAZA','0605'),
+ ('P0598','CHILETE','0605'),
+ ('P0599','CUPISNIQUE','0605'),
+ ('P0600','GUZMANGO','0605'),
+ ('P0601','SAN BENITO','0605'),
+ ('P0602','SANTA CRUZ DE TOLED','0605'),
+ ('P0603','TANTARICA','0605'),
+ ('P0604','YONAN','0605'),
+ ('P0605','CUTERVO','0606'),
+ ('P0606','CALLAYUC','0606'),
+ ('P0607','CHOROS','0606'),
+ ('P0608','CUJILLO','0606'),
+ ('P0609','LA RAMADA','0606'),
+ ('P0610','PIMPINGOS','0606'),
+ ('P0611','QUEROCOTILLO','0606'),
+ ('P0612','SAN ANDRES DE CUTERVO','0606'),
+ ('P0613','SAN JUAN DE CUTERVO','0606'),
+ ('P0614','SAN LUIS DE LUCMA','0606'),
+ ('P0615','SANTA CRUZ','0606'),
+ ('P0616','SANTO DOMINGO DE LA CAPILLA','0606'),
+ ('P0617','SANTO TOMAS','0606'),
+ ('P0618','SOCOTA','0606'),
+ ('P0619','TORIBIO CASANOVA','0606'),
+ ('P0620','BAMBAMARCA','0607'),
+ ('P0621','CHUGUR','0607'),
+ ('P0622','HUALGAYOC','0607'),
+ ('P0623','JAEN','0608'),
+ ('P0624','BELLAVISTA','0608'),
+ ('P0625','CHONTALI','0608'),
+ ('P0626','COLASAY','0608'),
+ ('P0627','HUABAL','0608'),
+ ('P0628','LAS PIRIAS','0608'),
+ ('P0629','POMAHUACA','0608'),
+ ('P0630','PUCARA','0608'),
+ ('P0631','SALLIQUE','0608'),
+ ('P0632','SAN FELIPE','0608'),
+ ('P0633','SAN JOSE DEL ALTO','0608'),
+ ('P0634','SANTA ROSA','0608'),
+ ('P0635','SAN IGNACIO','0609'),
+ ('P0636','CHIRINOS','0609'),
+ ('P0637','HUARANGO','0609'),
+ ('P0638','LA COIPA','0609'),
+ ('P0639','NAMBALLE','0609'),
+ ('P0640','SAN JOSE DE LOURDES','0609'),
+ ('P0641','TABACONAS','0609'),
+ ('P0642','PEDRO GALVEZ','0610'),
+ ('P0643','CHANCAY','0610'),
+ ('P0644','EDUARDO VILLANUEVA','0610'),
+ ('P0645','GREGORIO PITA','0610'),
+ ('P0646','ICHOCAN','0610'),
+ ('P0647','JOSE MANUEL QUIROZ','0610'),
+ ('P0648','JOSE SABOGAL','0610'),
+ ('P0649','SAN MIGUEL','0611'),
+ ('P0650','BOLIVAR','0611'),
+ ('P0651','CALQUIS','0611'),
+ ('P0652','CATILLUC','0611'),
+ ('P0653','EL PRADO','0611'),
+ ('P0654','LA FLORIDA','0611'),
+ ('P0655','LLAPA','0611'),
+ ('P0656','NANCHOC','0611'),
+ ('P0657','NIEPOS','0611'),
+ ('P0658','SAN GREGORIO','0611'),
+ ('P0659','SAN SILVESTRE DE COCHAN','0611'),
+ ('P0660','TONGOD','0611'),
+ ('P0661','UNION AGUA BLANCA','0611'),
+ ('P0662','SAN PABLO','0612'),
+ ('P0663','SAN BERNARDINO','0612'),
+ ('P0664','SAN LUIS','0612'),
+ ('P0665','TUMBADEN','0612'),
+ ('P0666','SANTA CRUZ','0613'),
+ ('P0667','ANDABAMBA','0613'),
+ ('P0668','CATACHE','0613'),
+ ('P0669','CHANCAYBAÑOS','0613'),
+ ('P0670','LA ESPERANZA','0613'),
+ ('P0671','NINABAMBA','0613'),
+ ('P0672','PULAN','0613'),
+ ('P0673','SAUCEPAMPA','0613'),
+ ('P0674','SEXI','0613'),
+ ('P0675','UTICYACU','0613'),
+ ('P0676','YAUYUCAN','0613'),
+ ('P0677','CALLAO','0701'),
+ ('P0678','BELLAVISTA','0701'),
+ ('P0679','CARMEN DE LA LEGUA REYNOSO','0701'),
+ ('P0680','LA PERLA','0701'),
+ ('P0681','LA PUNTA','0701'),
+ ('P0682','VENTANILLA','0701'),
+ ('P0683','CUSCO','0801'),
+ ('P0684','CCORCA','0801'),
+ ('P0685','POROY','0801'),
+ ('P0686','SAN JERONIMO','0801'),
+ ('P0687','SAN SEBASTIAN','0801'),
+ ('P0688','SANTIAGO','0801'),
+ ('P0689','SAYLLA','0801'),
+ ('P0690','WANCHAQ','0801'),
+ ('P0691','ACOMAYO','0802'),
+ ('P0692','ACOPIA','0802'),
+ ('P0693','ACOS','0802'),
+ ('P0694','MOSOC LLACTA','0802'),
+ ('P0695','POMACANCHI','0802'),
+ ('P0696','RONDOCAN','0802'),
+ ('P0697','SANGARARA','0802'),
+ ('P0698','ANTA','0803'),
+ ('P0699','ANCAHUASI','0803'),
+ ('P0700','CACHIMAYO','0803'),
+ ('P0701','CHINCHAYPUJIO','0803'),
+ ('P0702','HUAROCONDO','0803'),
+ ('P0703','LIMATAMBO','0803'),
+ ('P0704','MOLLEPATA','0803'),
+ ('P0705','PUCYURA','0803'),
+ ('P0706','ZURITE','0803'),
+ ('P0707','CALCA','0804'),
+ ('P0708','COYA','0804'),
+ ('P0709','LAMAY','0804'),
+ ('P0710','LARES','0804'),
+ ('P0711','PISAC','0804'),
+ ('P0712','SAN SALVADOR','0804'),
+ ('P0713','TARAY','0804'),
+ ('P0714','YANATILE','0804'),
+ ('P0715','YANAOCA','0805'),
+ ('P0716','CHECCA','0805'),
+ ('P0717','KUNTURKANKI','0805'),
+ ('P0718','LANGUI','0805'),
+ ('P0719','LAYO','0805'),
+ ('P0720','PAMPAMARCA','0805'),
+ ('P0721','QUEHUE','0805'),
+ ('P0722','TUPAC AMARU','0805'),
+ ('P0723','SICUANI','0806'),
+ ('P0724','CHECACUPE','0806'),
+ ('P0725','COMBAPATA','0806'),
+ ('P0726','MARANGANI','0806'),
+ ('P0727','PITUMARCA','0806'),
+ ('P0728','SAN PABLO','0806'),
+ ('P0729','SAN PEDRO','0806'),
+ ('P0730','TINTA','0806'),
+ ('P0731','SANTO TOMAS','0807'),
+ ('P0732','CAPACMARCA','0807'),
+ ('P0733','CHAMACA','0807'),
+ ('P0734','COLQUEMARCA','0807'),
+ ('P0735','LIVITACA','0807'),
+ ('P0736','LLUSCO','0807'),
+ ('P0737','QUIÑOTA','0807'),
+ ('P0738','VELILLE','0807'),
+ ('P0739','ESPINAR','0808'),
+ ('P0740','CONDOROMA','0808'),
+ ('P0741','COPORAQUE','0808'),
+ ('P0742','OCORURO','0808'),
+ ('P0743','PALLPATA','0808'),
+ ('P0744','PICHIGUA','0808'),
+ ('P0745','SUYCKUTAMBO','0808'),
+ ('P0746','ALTO PICHIGUA','0808'),
+ ('P0747','SANTA ANA','0809'),
+ ('P0748','ECHARATE','0809'),
+ ('P0749','HUAYOPATA','0809'),
+ ('P0750','MARANURA','0809'),
+ ('P0751','OCOBAMBA','0809'),
+ ('P0752','QUELLOUNO','0809'),
+ ('P0753','KIMBIRI','0809'),
+ ('P0754','SANTA TERESA','0809'),
+ ('P0755','VILCABAMBA','0809'),
+ ('P0756','PICHARI','0809'),
+ ('P0757','PARURO','0810'),
+ ('P0758','ACCHA','0810'),
+ ('P0759','CCAPI','0810'),
+ ('P0760','COLCHA','0810'),
+ ('P0761','HUANOQUITE','0810'),
+ ('P0762','OMACHA','0810'),
+ ('P0763','PACCARITAMBO','0810'),
+ ('P0764','PILLPINTO','0810'),
+ ('P0765','YAURISQUE','0810'),
+ ('P0766','PAUCARTAMBO','0811'),
+ ('P0767','CAICAY','0811'),
+ ('P0768','CHALLABAMBA','0811'),
+ ('P0769','COLQUEPATA','0811'),
+ ('P0770','HUANCARANI','0811'),
+ ('P0771','KOSÑIPATA','0811'),
+ ('P0772','URCOS','0812'),
+ ('P0773','ANDAHUAYLILLAS','0812'),
+ ('P0774','CAMANTI','0812'),
+ ('P0775','CCARHUAYO','0812'),
+ ('P0776','CCATCA','0812'),
+ ('P0777','CUSIPATA','0812'),
+ ('P0778','HUARO','0812'),
+ ('P0779','LUCRE','0812'),
+ ('P0780','MARCAPATA','0812'),
+ ('P0781','OCONGATE','0812'),
+ ('P0782','OROPESA','0812'),
+ ('P0783','QUIQUIJANA','0812'),
+ ('P0784','URUBAMBA','0813'),
+ ('P0785','CHINCHERO','0813'),
+ ('P0786','HUAYLLABAMBA','0813'),
+ ('P0787','MACHUPICCHU','0813'),
+ ('P0788','MARAS','0813'),
+ ('P0789','OLLANTAYTAMBO','0813'),
+ ('P0790','YUCAY','0813'),
+ ('P0791','HUANCAVELICA','0901'),
+ ('P0792','ACOBAMBILLA','0901'),
+ ('P0793','ACORIA','0901'),
+ ('P0794','CONAYCA','0901'),
+ ('P0795','CUENCA','0901'),
+ ('P0796','HUACHOCOLPA','0901'),
+ ('P0797','HUAYLLAHUARA','0901'),
+ ('P0798','IZCUCHACA','0901'),
+ ('P0799','LARIA','0901'),
+ ('P0800','MANTA','0901'),
+ ('P0801','MARISCAL CACERES','0901'),
+ ('P0802','MOYA','0901'),
+ ('P0803','NUEVO OCCORO','0901'),
+ ('P0804','PALCA','0901'),
+ ('P0805','PILCHACA','0901'),
+ ('P0806','VILCA','0901'),
+ ('P0807','YAULI','0901'),
+ ('P0808','ASCENSION','0901'),
+ ('P0809','HUANDO','0901'),
+ ('P0810','ACOBAMBA','0902'),
+ ('P0811','ANDABAMBA','0902'),
+ ('P0812','ANTA','0902'),
+ ('P0813','CAJA','0902'),
+ ('P0814','MARCAS','0902'),
+ ('P0815','PAUCARA','0902'),
+ ('P0816','POMACOCHA','0902'),
+ ('P0817','ROSARIO','0902'),
+ ('P0818','LIRCAY','0903'),
+ ('P0819','ANCHONGA','0903'),
+ ('P0820','CALLANMARCA','0903'),
+ ('P0821','CCOCHACCASA','0903'),
+ ('P0822','CHINCHO','0903'),
+ ('P0823','CONGALLA','0903'),
+ ('P0824','HUANCA-HUANCA','0903'),
+ ('P0825','HUAYLLAY GRANDE','0903'),
+ ('P0826','JULCAMARCA','0903'),
+ ('P0827','SAN ANTONIO DE ANTAPARCO','0903'),
+ ('P0828','SANTO TOMAS DE PATA','0903'),
+ ('P0829','SECCLLA','0903'),
+ ('P0830','CASTROVIRREYNA','0904'),
+ ('P0831','ARMA','0904'),
+ ('P0832','AURAHUA','0904'),
+ ('P0833','CAPILLAS','0904'),
+ ('P0834','CHUPAMARCA','0904'),
+ ('P0835','COCAS','0904'),
+ ('P0836','HUACHOS','0904'),
+ ('P0837','HUAMATAMBO','0904'),
+ ('P0838','MOLLEPAMPA','0904'),
+ ('P0839','SAN JUAN','0904'),
+ ('P0840','SANTA ANA','0904'),
+ ('P0841','TANTARA','0904'),
+ ('P0842','TICRAPO','0904'),
+ ('P0843','CHURCAMPA','0905'),
+ ('P0844','ANCO','0905'),
+ ('P0845','CHINCHIHUASI','0905'),
+ ('P0846','EL CARMEN','0905'),
+ ('P0847','LA MERCED','0905'),
+ ('P0848','LOCROJA','0905'),
+ ('P0849','PAUCARBAMBA','0905'),
+ ('P0850','SAN MIGUEL DE MAYOCC','0905'),
+ ('P0851','SAN PEDRO DE CORIS','0905'),
+ ('P0852','PACHAMARCA','0905'),
+ ('P0853','HUAYTARA','0906'),
+ ('P0854','AYAVI','0906'),
+ ('P0855','CORDOVA','0906'),
+ ('P0856','HUAYACUNDO ARMA','0906'),
+ ('P0857','LARAMARCA','0906'),
+ ('P0858','OCOYO','0906'),
+ ('P0859','PILPICHACA','0906'),
+ ('P0860','QUERCO','0906'),
+ ('P0861','QUITO-ARMA','0906'),
+ ('P0862','SAN ANTONIO DE CUSICANCHA','0906'),
+ ('P0863','SAN FRANCISCO DE SANGAYAICO','0906'),
+ ('P0864','SAN ISIDRO','0906'),
+ ('P0865','SANTIAGO DE CHOCORVOS','0906'),
+ ('P0866','SANTIAGO DE QUIRAHUARA','0906'),
+ ('P0867','SANTO DOMINGO DE CAPILLAS','0906'),
+ ('P0868','TAMBO','0906'),
+ ('P0869','PAMPAS','0907'),
+ ('P0870','ACOSTAMBO','0907'),
+ ('P0871','ACRAQUIA','0907'),
+ ('P0872','AHUAYCHA','0907'),
+ ('P0873','COLCABAMBA','0907'),
+ ('P0874','DANIEL HERNANDEZ','0907'),
+ ('P0875','HUACHOCOLPA','0907'),
+ ('P0876','HUANDO','0907'),
+ ('P0877','HUARIBAMBA','0907'),
+ ('P0878','ÑAHUIMPUQUIO','0907'),
+ ('P0879','PAZOS','0907'),
+ ('P0880','QUISHUAR','0907'),
+ ('P0881','SALCABAMBA','0907'),
+ ('P0882','SALCAHUASI','0907'),
+ ('P0883','SAN MARCOS DE ROCCHAC','0907'),
+ ('P0884','SURCUBAMBA','0907'),
+ ('P0885','TINTAY PUNCU','0907'),
+ ('P0886','HUANUCO','1001'),
+ ('P0887','AMARILIS','1001'),
+ ('P0888','CHINCHAO','1001'),
+ ('P0889','CHURUBAMBA','1001'),
+ ('P0890','MARGOS','1001'),
+ ('P0891','QUISQUI','1001'),
+ ('P0892','SAN FRANCISCO DE CAYRAN','1001'),
+ ('P0893','SAN PEDRO DE CHAULAN','1001'),
+ ('P0894','SANTA MARIA DEL VALLE','1001'),
+ ('P0895','YARUMAYO','1001'),
+ ('P0896','PILLCO MARCA','1001'),
+ ('P0897','AMBO','1002'),
+ ('P0898','CAYNA','1002'),
+ ('P0899','COLPAS','1002'),
+ ('P0900','CONCHAMARCA','1002'),
+ ('P0901','HUACAR','1002'),
+ ('P0902','SAN FRANCISCO','1002'),
+ ('P0903','SAN RAFAEL','1002'),
+ ('P0904','TOMAY KICHWA','1002'),
+ ('P0905','LA UNION','1003'),
+ ('P0906','CHUQUIS','1003'),
+ ('P0907','MARIAS','1003'),
+ ('P0908','PACHAS','1003'),
+ ('P0909','QUIVILLA','1003'),
+ ('P0910','RIPAN','1003'),
+ ('P0911','SHUNQUI','1003'),
+ ('P0912','SILLAPATA','1003'),
+ ('P0913','YANAS','1003'),
+ ('P0914','HUACAYBAMBA','1004'),
+ ('P0915','CANCHABAMBA','1004'),
+ ('P0916','COCHABAMBA','1004'),
+ ('P0917','PINRA','1004'),
+ ('P0918','LLATA','1005'),
+ ('P0919','ARANCAY','1005'),
+ ('P0920','CHAVIN DE PARIARCA','1005'),
+ ('P0921','JACAS GRANDE','1005'),
+ ('P0922','JIRCAN','1005'),
+ ('P0923','MIRAFLORES','1005'),
+ ('P0924','MONZON','1005'),
+ ('P0925','PUNCHAO','1005'),
+ ('P0926','PUÑOS','1005'),
+ ('P0927','SINGA','1005'),
+ ('P0928','TANTAMAYO','1005'),
+ ('P0929','RUPA-RUPA','1006'),
+ ('P0930','DANIEL ALOMIAS ROBLES','1006'),
+ ('P0931','HERMILIO VALDIZAN','1006'),
+ ('P0932','JOSE CRESPO Y CASTILLO','1006'),
+ ('P0933','LUYANDO','1006'),
+ ('P0934','MARIANO DAMASO BERAUN','1006'),
+ ('P0935','HUACRACHUCO','1007'),
+ ('P0936','CHOLON','1007'),
+ ('P0937','SAN BUENAVENTURA','1007'),
+ ('P0938','PANAO','1008'),
+ ('P0939','CHAGLLA','1008'),
+ ('P0940','MOLINO','1008'),
+ ('P0941','UMARI','1008'),
+ ('P0942','PUERTO INCA','1009'),
+ ('P0943','CODO DEL POZUZO','1009'),
+ ('P0944','HONORIA','1009'),
+ ('P0945','TOURNAVISTA','1009'),
+ ('P0946','YUYAPICHIS','1009'),
+ ('P0947','JESUS','1010'),
+ ('P0948','BAÑOS','1010'),
+ ('P0949','JIVIA','1010'),
+ ('P0950','QUEROPALCA','1010'),
+ ('P0951','RONDOS','1010'),
+ ('P0952','SAN FRANCISCO DE ASIS','1010'),
+ ('P0953','SAN MIGUEL DE CAURI','1010'),
+ ('P0954','CHAVINILLO','1011'),
+ ('P0955','CAHUAC','1011'),
+ ('P0956','CHACABAMBA','1011'),
+ ('P0957','APARICIO POMARES','1011'),
+ ('P0958','JACAS CHICO','1011'),
+ ('P0959','OBAS','1011'),
+ ('P0960','PAMPAMARCA','1011'),
+ ('P0961','CHORAS','1011'),
+ ('P0962','ICA','1101'),
+ ('P0963','LA TINGUIÑA','1101'),
+ ('P0964','LOS AQUIJES','1101'),
+ ('P0965','OCUCAJE','1101'),
+ ('P0966','PACHACUTEC','1101'),
+ ('P0967','PARCONA','1101'),
+ ('P0968','PUEBLO NUEVO','1101'),
+ ('P0969','SALAS','1101'),
+ ('P0970','SAN JOSE DE LOS MOLINOS','1101'),
+ ('P0971','SAN JUAN BAUTISTA','1101'),
+ ('P0972','SANTIAGO','1101'),
+ ('P0973','SUBTANJALLA','1101'),
+ ('P0974','TATE','1101'),
+ ('P0975','YAUCA DEL ROSARIO','1101'),
+ ('P0976','CHINCHA ALTA','1102'),
+ ('P0977','ALTO LARAN','1102'),
+ ('P0978','CHAVIN','1102'),
+ ('P0979','CHINCHA BAJA','1102'),
+ ('P0980','EL CARMEN','1102'),
+ ('P0981','GROCIO PRADO','1102'),
+ ('P0982','PUEBLO NUEVO','1102'),
+ ('P0983','SAN JUAN DE YANAC','1102'),
+ ('P0984','SAN PEDRO DE HUACARPANA','1102'),
+ ('P0985','SUNAMPE','1102'),
+ ('P0986','TAMBO DE MORA','1102'),
+ ('P0987','NAZCA','1103'),
+ ('P0988','CHANGUILLO','1103'),
+ ('P0989','EL INGENIO','1103'),
+ ('P0990','MARCONA','1103'),
+ ('P0991','VISTA ALEGRE','1103'),
+ ('P0992','PALPA','1104'),
+ ('P0993','LLIPATA','1104'),
+ ('P0994','RIO GRANDE','1104'),
+ ('P0995','SANTA CRUZ','1104'),
+ ('P0996','TIBILLO','1104'),
+ ('P0997','PISCO','1105'),
+ ('P0998','HUANCANO','1105'),
+ ('P0999','HUMAY','1105'),
+ ('P1000','INDEPENDENCIA','1105'),
+ ('P1001','PARACAS','1105'),
+ ('P1002','SAN ANDRES','1105'),
+ ('P1003','SAN CLEMENTE','1105'),
+ ('P1004','TUPAC AMARU INCA','1105'),
+ ('P1005','HUANCAYO','1201'),
+ ('P1006','CARHUACALLANGA','1201'),
+ ('P1007','CHACAPAMPA','1201'),
+ ('P1008','CHICCHE','1201'),
+ ('P1009','CHILCA','1201'),
+ ('P1010','CHONGOS ALTO','1201'),
+ ('P1011','CHUPURO','1201'),
+ ('P1012','COLCA','1201'),
+ ('P1013','CULLHUAS','1201'),
+ ('P1014','EL TAMBO','1201'),
+ ('P1015','HUACRAPUQUIO','1201'),
+ ('P1016','HUALHUAS','1201'),
+ ('P1017','HUANCAN','1201'),
+ ('P1018','HUASICANCHA','1201'),
+ ('P1019','HUAYUCACHI','1201'),
+ ('P1020','INGENIO','1201'),
+ ('P1021','PARIAHUANCA','1201'),
+ ('P1022','PILCOMAYO','1201'),
+ ('P1023','PUCARA','1201'),
+ ('P1024','QUICHUAY','1201'),
+ ('P1025','QUILCAS','1201'),
+ ('P1026','SAN AGUSTIN','1201'),
+ ('P1027','SAN JERONIMO DE TUNAN','1201'),
+ ('P1028','SAÑO','1201'),
+ ('P1029','SAPALLANGA','1201'),
+ ('P1030','SICAYA','1201'),
+ ('P1031','SANTO DOMINGO DE ACOBAMBA','1201'),
+ ('P1032','VIQUES','1201'),
+ ('P1033','CONCEPCION','1202'),
+ ('P1034','ACO','1202'),
+ ('P1035','ANDAMARCA','1202'),
+ ('P1036','CHAMBARA','1202'),
+ ('P1037','COCHAS','1202'),
+ ('P1038','COMAS','1202'),
+ ('P1039','HEROINAS TOLEDO','1202'),
+ ('P1040','MANZANARES','1202'),
+ ('P1041','MARISCAL CASTILLA','1202'),
+ ('P1042','MATAHUASI','1202'),
+ ('P1043','MITO','1202'),
+ ('P1044','NUEVE DE JULIO','1202'),
+ ('P1045','ORCOTUNA','1202'),
+ ('P1046','SAN JOSE DE QUERO','1202'),
+ ('P1047','SANTA ROSA DE OCOPA','1202'),
+ ('P1048','CHANCHAMAYO','1203'),
+ ('P1049','PERENE','1203'),
+ ('P1050','PICHANAQUI','1203'),
+ ('P1051','SAN LUIS DE SHUARO','1203'),
+ ('P1052','SAN RAMON','1203'),
+ ('P1053','VITOC','1203'),
+ ('P1054','JAUJA','1204'),
+ ('P1055','ACOLLA','1204'),
+ ('P1056','APATA','1204'),
+ ('P1057','ATAURA','1204'),
+ ('P1058','CANCHAYLLO','1204'),
+ ('P1059','CURICACA','1204'),
+ ('P1060','EL MANTARO','1204'),
+ ('P1061','HUAMALI','1204'),
+ ('P1062','HUARIPAMPA','1204'),
+ ('P1063','HUERTAS','1204'),
+ ('P1064','JANJAILLO','1204'),
+ ('P1065','JULCAN','1204'),
+ ('P1066','LEONOR ORDOÑEZ','1204'),
+ ('P1067','LLOCLLAPAMPA','1204'),
+ ('P1068','MARCO','1204'),
+ ('P1069','MASMA','1204'),
+ ('P1070','MASMA CHICCHE','1204'),
+ ('P1071','MOLINOS','1204'),
+ ('P1072','MONOBAMBA','1204'),
+ ('P1073','MUQUI','1204'),
+ ('P1074','MUQUIYAUYO','1204'),
+ ('P1075','PACA','1204'),
+ ('P1076','PACCHA','1204'),
+ ('P1077','PANCAN','1204'),
+ ('P1078','PARCO','1204'),
+ ('P1079','POMACANCHA','1204'),
+ ('P1080','RICRAN','1204'),
+ ('P1081','SAN LORENZO','1204'),
+ ('P1082','SAN PEDRO DE CHUNAN','1204'),
+ ('P1083','SAUSA','1204'),
+ ('P1084','SINCOS','1204'),
+ ('P1085','TUNAN MARCA','1204'),
+ ('P1086','YAULI','1204'),
+ ('P1087','YAUYOS','1204'),
+ ('P1088','JUNIN','1205'),
+ ('P1089','CARHUAMAYO','1205'),
+ ('P1090','ONDORES','1205'),
+ ('P1091','ULCUMAYO','1205'),
+ ('P1092','SATIPO','1206'),
+ ('P1093','COVIRIALI','1206'),
+ ('P1094','LLAYLLA','1206'),
+ ('P1095','MAZAMARI','1206'),
+ ('P1096','PAMPA HERMOSA','1206'),
+ ('P1097','PANGOA','1206'),
+ ('P1098','RIO NEGRO','1206'),
+ ('P1099','RIO TAMBO','1206'),
+ ('P1100','TARMA','1207'),
+ ('P1101','ACOBAMBA','1207'),
+ ('P1102','HUARICOLCA','1207'),
+ ('P1103','HUASAHUASI','1207'),
+ ('P1104','LA UNION','1207'),
+ ('P1105','PALCA','1207'),
+ ('P1106','PALCAMAYO','1207'),
+ ('P1107','SAN PEDRO DE CAJAS','1207'),
+ ('P1108','TAPO','1207'),
+ ('P1109','LA OROYA','1208'),
+ ('P1110','CHACAPALPA','1208'),
+ ('P1111','HUAY-HUAY','1208'),
+ ('P1112','MARCAPOMACOCHA','1208'),
+ ('P1113','MOROCOCHA','1208'),
+ ('P1114','PACCHA','1208'),
+ ('P1115','SANTA BARBARA DE CARHUACAYAN','1208'),
+ ('P1116','SANTA ROSA DE SACCO','1208'),
+ ('P1117','SUITUCANCHA','1208'),
+ ('P1118','YAULI','1208'),
+ ('P1119','CHUPACA','1209'),
+ ('P1120','AHUAC','1209'),
+ ('P1121','CHONGOS BAJO','1209'),
+ ('P1122','HUACHAC','1209'),
+ ('P1123','HUAMANCACA CHICO','1209'),
+ ('P1124','SAN JUAN DE YSCOS','1209'),
+ ('P1125','SAN JUAN DE JARPA','1209'),
+ ('P1126','TRES DE DICIEMBRE','1209'),
+ ('P1127','YANACANCHA','1209'),
+ ('P1128','TRUJILLO','1301'),
+ ('P1129','EL PORVENIR','1301'),
+ ('P1130','FLORENCIA DE MORA','1301'),
+ ('P1131','HUANCHACO','1301'),
+ ('P1132','LA ESPERANZA','1301'),
+ ('P1133','LAREDO','1301'),
+ ('P1134','MOCHE','1301'),
+ ('P1135','POROTO','1301'),
+ ('P1136','SALAVERRY','1301'),
+ ('P1137','SIMBAL','1301'),
+ ('P1138','VICTOR LARCO HERRERA','1301'),
+ ('P1139','ASCOPE','1302'),
+ ('P1140','CHICAMA','1302'),
+ ('P1141','CHOCOPE','1302'),
+ ('P1142','MAGDALENA DE CAO','1302'),
+ ('P1143','PAIJAN','1302'),
+ ('P1144','RAZURI','1302'),
+ ('P1145','SANTIAGO DE CAO','1302'),
+ ('P1146','CASA GRANDE','1302'),
+ ('P1147','BOLIVAR','1303'),
+ ('P1148','BAMBAMARCA','1303'),
+ ('P1149','CONDORMARCA','1303'),
+ ('P1150','LONGOTEA','1303'),
+ ('P1151','UCHUMARCA','1303'),
+ ('P1152','UCUNCHA','1303'),
+ ('P1153','CHEPEN','1304'),
+ ('P1154','PACANGA','1304'),
+ ('P1155','PUEBLO NUEVO','1304'),
+ ('P1156','JULCAN','1305'),
+ ('P1157','CALAMARCA','1305'),
+ ('P1158','CARABAMBA','1305'),
+ ('P1159','HUASO','1305'),
+ ('P1160','OTUZCO','1306'),
+ ('P1161','AGALLPAMPA','1306'),
+ ('P1162','CHARAT','1306'),
+ ('P1163','HUARANCHAL','1306'),
+ ('P1164','LA CUESTA','1306'),
+ ('P1165','MACHE','1306'),
+ ('P1166','PARANDAY','1306'),
+ ('P1167','SALPO','1306'),
+ ('P1168','SINSICAP','1306'),
+ ('P1169','USQUIL','1306'),
+ ('P1170','SAN PEDRO DE LLOC','1307'),
+ ('P1171','GUADALUPE','1307'),
+ ('P1172','JEQUETEPEQUE','1307'),
+ ('P1173','PACASMAYO','1307'),
+ ('P1174','SAN JOSE','1307'),
+ ('P1175','TAYABAMBA','1308'),
+ ('P1176','BULDIBUYO','1308'),
+ ('P1177','CHILLIA','1308'),
+ ('P1178','HUANCASPATA','1308'),
+ ('P1179','HUAYLILLAS','1308'),
+ ('P1180','HUAYO','1308'),
+ ('P1181','ONGON','1308'),
+ ('P1182','PARCOY','1308'),
+ ('P1183','PATAZ','1308'),
+ ('P1184','PIAS','1308'),
+ ('P1185','SANTIAGO DE CHALLAS','1308'),
+ ('P1186','TAURIJA','1308'),
+ ('P1187','URPAY','1308'),
+ ('P1188','HUAMACHUCO','1309'),
+ ('P1189','CHUGAY','1309'),
+ ('P1190','COCHORCO','1309'),
+ ('P1191','CURGOS','1309'),
+ ('P1192','MARCABAL','1309'),
+ ('P1193','SANAGORAN','1309'),
+ ('P1194','SARIN','1309'),
+ ('P1195','SARTIMBAMBA','1309'),
+ ('P1196','SANTIAGO DE CHUCO','1310'),
+ ('P1197','ANGASMARCA','1310'),
+ ('P1198','CACHICADAN','1310'),
+ ('P1199','MOLLEBAMBA','1310'),
+ ('P1200','MOLLEPATA','1310'),
+ ('P1201','QUIRUVILCA','1310'),
+ ('P1202','SANTA CRUZ DE CHUCA','1310'),
+ ('P1203','SITABAMBA','1310'),
+ ('P1204','CASCAS','1311'),
+ ('P1205','LUCMA','1311'),
+ ('P1206','COMPIN','1311'),
+ ('P1207','SAYAPULLO','1311'),
+ ('P1208','VIRU','1312'),
+ ('P1209','CHAO','1312'),
+ ('P1210','GUADALUPITO','1312'),
+ ('P1211','CHICLAYO','1401'),
+ ('P1212','CHONGOYAPE','1401'),
+ ('P1213','ETEN','1401'),
+ ('P1214','ETEN PUERTO','1401'),
+ ('P1215','JOSE LEONARDO ORTIZ','1401'),
+ ('P1216','LA VICTORIA','1401'),
+ ('P1217','LAGUNAS','1401'),
+ ('P1218','MONSEFU','1401'),
+ ('P1219','NUEVA ARICA','1401'),
+ ('P1220','OYOTUN','1401'),
+ ('P1221','PICSI','1401'),
+ ('P1222','PIMENTEL','1401'),
+ ('P1223','REQUE','1401'),
+ ('P1224','SANTA ROSA','1401'),
+ ('P1225','SAÑA','1401'),
+ ('P1226','CAYALTI','1401'),
+ ('P1227','PATAPO','1401'),
+ ('P1228','POMALCA','1401'),
+ ('P1229','PUCALA','1401'),
+ ('P1230','TUMAN','1401'),
+ ('P1231','FERREÑAFE','1402'),
+ ('P1232','CAÑARIS','1402'),
+ ('P1233','INCAHUASI','1402'),
+ ('P1234','MANUEL ANTONIO MESONES MURO','1402'),
+ ('P1235','PITIPO','1402'),
+ ('P1236','PUEBLO NUEVO','1402'),
+ ('P1237','LAMBAYEQUE','1403'),
+ ('P1238','CHOCHOPE','1403'),
+ ('P1239','ILLIMO','1403'),
+ ('P1240','JAYANCA','1403'),
+ ('P1241','MOCHUMI','1403'),
+ ('P1242','MORROPE','1403'),
+ ('P1243','MOTUPE','1403'),
+ ('P1244','OLMOS','1403'),
+ ('P1245','PACORA','1403'),
+ ('P1246','SALAS','1403'),
+ ('P1247','SAN JOSE','1403'),
+ ('P1248','TUCUME','1403'),
+ ('P1249','LIMA','1501'),
+ ('P1250','ANCON','1501'),
+ ('P1251','ATE','1501'),
+ ('P1252','BARRANCO','1501'),
+ ('P1253','BREÑA','1501'),
+ ('P1254','CARABAYLLO','1501'),
+ ('P1255','CHACLACAYO','1501'),
+ ('P1256','CHORRILLOS','1501'),
+ ('P1257','CIENEGUILLA','1501'),
+ ('P1258','COMAS','1501'),
+ ('P1259','EL AGUSTINO','1501'),
+ ('P1260','INDEPENDENCIA','1501'),
+ ('P1261','JESUS MARIA','1501'),
+ ('P1262','LA MOLINA','1501'),
+ ('P1263','LA VICTORIA','1501'),
+ ('P1264','LINCE','1501'),
+ ('P1265','LOS OLIVOS','1501'),
+ ('P1266','LURIGANCHO','1501'),
+ ('P1267','LURIN','1501'),
+ ('P1268','MAGDALENA DEL MAR','1501'),
+ ('P1269','MAGDALENA VIEJA','1501'),
+ ('P1270','MIRAFLORES','1501'),
+ ('P1271','PACHACAMAC','1501'),
+ ('P1272','PUCUSANA','1501'),
+ ('P1273','PUENTE PIEDRA','1501'),
+ ('P1274','PUNTA HERMOSA','1501'),
+ ('P1275','PUNTA NEGRA','1501'),
+ ('P1276','RIMAC','1501'),
+ ('P1277','SAN BARTOLO','1501'),
+ ('P1278','SAN BORJA','1501'),
+ ('P1279','SAN ISIDRO','1501'),
+ ('P1280','SAN JUAN DE LURIGANCHO','1501'),
+ ('P1281','SAN JUAN DE MIRAFLORES','1501'),
+ ('P1282','SAN LUIS','1501'),
+ ('P1283','SAN MARTIN DE PORRES','1501'),
+ ('P1284','SAN MIGUEL','1501'),
+ ('P1285','SANTA ANITA','1501'),
+ ('P1286','SANTA MARIA DEL MAR','1501'),
+ ('P1287','SANTA ROSA','1501'),
+ ('P1288','SANTIAGO DE SURCO','1501'),
+ ('P1289','SURQUILLO','1501'),
+ ('P1290','VILLA EL SALVADOR','1501'),
+ ('P1291','VILLA MARIA DEL TRIUNFO','1501'),
+ ('P1292','BARRANCA','1502'),
+ ('P1293','PARAMONGA','1502'),
+ ('P1294','PATIVILCA','1502'),
+ ('P1295','SUPE','1502'),
+ ('P1296','SUPE PUERTO','1502'),
+ ('P1297','CAJATAMBO','1503'),
+ ('P1298','COPA','1503'),
+ ('P1299','GORGOR','1503'),
+ ('P1300','HUANCAPON','1503'),
+ ('P1301','MANAS','1503'),
+ ('P1302','CANTA','1504'),
+ ('P1303','ARAHUAY','1504'),
+ ('P1304','HUAMANTANGA','1504'),
+ ('P1305','HUAROS','1504'),
+ ('P1306','LACHAQUI','1504'),
+ ('P1307','SAN BUENAVENTURA','1504'),
+ ('P1308','SANTA ROSA DE QUIVES','1504'),
+ ('P1309','SAN VICENTE DE CAÑETE','1505'),
+ ('P1310','ASIA','1505'),
+ ('P1311','CALANGO','1505'),
+ ('P1312','CERRO AZUL','1505'),
+ ('P1313','CHILCA','1505'),
+ ('P1314','COAYLLO','1505'),
+ ('P1315','IMPERIAL','1505'),
+ ('P1316','LUNAHUANA','1505'),
+ ('P1317','MALA','1505'),
+ ('P1318','NUEVO IMPERIAL','1505'),
+ ('P1319','PACARAN','1505'),
+ ('P1320','QUILMANA','1505'),
+ ('P1321','SAN ANTONIO','1505'),
+ ('P1322','SAN LUIS','1505'),
+ ('P1323','SANTA CRUZ DE FLORES','1505'),
+ ('P1324','ZUÑIGA','1505'),
+ ('P1325','HUARAL','1506'),
+ ('P1326','ATAVILLOS ALTO','1506'),
+ ('P1327','ATAVILLOS BAJO','1506'),
+ ('P1328','AUCALLAMA','1506'),
+ ('P1329','CHANCAY','1506'),
+ ('P1330','IHUARI','1506'),
+ ('P1331','LAMPIAN','1506'),
+ ('P1332','PACARAOS','1506'),
+ ('P1333','SAN MIGUEL DE ACOS','1506'),
+ ('P1334','SANTA CRUZ DE ANDAMARCA','1506'),
+ ('P1335','SUMBILCA','1506'),
+ ('P1336','VEINTISIETE DE NOVIEMBRE','1506'),
+ ('P1337','MATUCANA','1507'),
+ ('P1338','ANTIOQUIA','1507'),
+ ('P1339','CALLAHUANCA','1507'),
+ ('P1340','CARAMPOMA','1507'),
+ ('P1341','CHICLA','1507'),
+ ('P1342','CUENCA','1507'),
+ ('P1343','HUACHUPAMPA','1507'),
+ ('P1344','HUANZA','1507'),
+ ('P1345','HUAROCHIRI','1507'),
+ ('P1346','LAHUAYTAMBO','1507'),
+ ('P1347','LANGA','1507'),
+ ('P1348','LARAOS','1507'),
+ ('P1349','MARIATANA','1507'),
+ ('P1350','RICARDO PALMA','1507'),
+ ('P1351','SAN ANDRES DE TUPICOCHA','1507'),
+ ('P1352','SAN ANTONIO','1507'),
+ ('P1353','SAN BARTOLOME','1507'),
+ ('P1354','SAN DAMIAN','1507'),
+ ('P1355','SAN JUAN DE IRIS','1507'),
+ ('P1356','SAN JUAN DE TANTARANCHE','1507'),
+ ('P1357','SAN LORENZO DE QUINTI','1507'),
+ ('P1358','SAN MATEO','1507'),
+ ('P1359','SAN MATEO DE OTAO','1507'),
+ ('P1360','SAN PEDRO DE CASTA','1507'),
+ ('P1361','SAN PEDRO DE HUANCAYRE','1507'),
+ ('P1362','SANGALLAYA','1507'),
+ ('P1363','SANTA CRUZ DE COCACHACRA','1507'),
+ ('P1364','SANTA EULALIA','1507'),
+ ('P1365','SANTIAGO DE ANCHUCAYA','1507'),
+ ('P1366','SANTIAGO DE TUNA','1507'),
+ ('P1367','SANTO DOMINGO DE LOS OLLEROS','1507'),
+ ('P1368','SURCO','1507'),
+ ('P1369','HUACHO','1508'),
+ ('P1370','AMBAR','1508'),
+ ('P1371','CALETA DE CARQUIN','1508'),
+ ('P1372','CHECRAS','1508'),
+ ('P1373','HUALMAY','1508'),
+ ('P1374','HUAURA','1508'),
+ ('P1375','LEONCIO PRADO','1508'),
+ ('P1376','PACCHO','1508'),
+ ('P1377','SANTA LEONOR','1508'),
+ ('P1378','SANTA MARIA','1508'),
+ ('P1379','SAYAN','1508'),
+ ('P1380','VEGUETA','1508'),
+ ('P1381','ANDAJES','1509'),
+ ('P1382','CAUJUL','1509'),
+ ('P1383','COCHAMARCA','1509'),
+ ('P1384','NAVAN','1509'),
+ ('P1385','PACHANGARA','1509'),
+ ('P1386','OYON','1509'),
+ ('P1387','YAUYOS','1510'),
+ ('P1388','ALIS','1510'),
+ ('P1389','AYAUCA','1510'),
+ ('P1390','AYAVIRI','1510'),
+ ('P1391','AZANGARO','1510'),
+ ('P1392','CACRA','1510'),
+ ('P1393','CARANIA','1510'),
+ ('P1394','CATAHUASI','1510'),
+ ('P1395','CHOCOS','1510'),
+ ('P1396','COCHAS','1510'),
+ ('P1397','COLONIA','1510'),
+ ('P1398','HONGOS','1510'),
+ ('P1399','HUAMPARA','1510'),
+ ('P1400','HUANCAYA','1510'),
+ ('P1401','HUANGASCAR','1510'),
+ ('P1402','HUANTAN','1510'),
+ ('P1403','HUAÑEC','1510'),
+ ('P1404','LARAOS','1510'),
+ ('P1405','LINCHA','1510'),
+ ('P1406','MADEAN','1510'),
+ ('P1407','MIRAFLORES','1510'),
+ ('P1408','OMAS','1510'),
+ ('P1409','PUTINZA','1510'),
+ ('P1410','QUINCHES','1510'),
+ ('P1411','QUINOCAY','1510'),
+ ('P1412','SAN JOAQUIN','1510'),
+ ('P1413','SAN PEDRO DE PILAS','1510'),
+ ('P1414','TANTA','1510'),
+ ('P1415','TAURIPAMPA','1510'),
+ ('P1416','TOMAS','1510'),
+ ('P1417','TUPE','1510'),
+ ('P1418','VIÑAC','1510'),
+ ('P1419','VITIS','1510'),
+ ('P1420','IQUITOS','1601'),
+ ('P1421','ALTO NANAY','1601'),
+ ('P1422','FERNANDO LORES','1601'),
+ ('P1423','INDIANA','1601'),
+ ('P1424','LAS AMAZONAS','1601'),
+ ('P1425','MAZAN','1601'),
+ ('P1426','NAPO','1601'),
+ ('P1427','PUNCHANA','1601'),
+ ('P1428','PUTUMAYO','1601'),
+ ('P1429','TORRES CAUSANA','1601'),
+ ('P1430','YAQUERANA','1601'),
+ ('P1431','BELEN','1601'),
+ ('P1432','SAN JUAN BAUTISTA','1601'),
+ ('P1433','TENIENTE MANUEL CLAVERO','1601'),
+ ('P1434','YURIMAGUAS','1602'),
+ ('P1435','BALSAPUERTO','1602'),
+ ('P1436','BARRANCA','1602'),
+ ('P1437','CAHUAPANAS','1602'),
+ ('P1438','JEBEROS','1602'),
+ ('P1439','LAGUNAS','1602'),
+ ('P1440','MANSERICHE','1602'),
+ ('P1441','MORONA','1602'),
+ ('P1442','PASTAZA','1602'),
+ ('P1443','SANTA CRUZ','1602'),
+ ('P1444','TENIENTE CESAR LOPEZ ROJAS','1602'),
+ ('P1445','NAUTA','1603'),
+ ('P1446','PARINARI','1603'),
+ ('P1447','TIGRE','1603'),
+ ('P1448','TROMPETEROS','1603'),
+ ('P1449','URARINAS','1603'),
+ ('P1450','RAMON CASTILLA','1604'),
+ ('P1451','PEBAS','1604'),
+ ('P1452','YAVARI','1604'),
+ ('P1453','SAN PABLO','1604'),
+ ('P1454','REQUENA','1605'),
+ ('P1455','ALTO TAPICHE','1605'),
+ ('P1456','CAPELO','1605'),
+ ('P1457','EMILIO SAN MARTIN','1605'),
+ ('P1458','MAQUIA','1605'),
+ ('P1459','PUINAHUA','1605'),
+ ('P1460','SAQUENA','1605'),
+ ('P1461','SOPLIN','1605'),
+ ('P1462','TAPICHE','1605'),
+ ('P1463','JENARO HERRERA','1605'),
+ ('P1464','YAQUERANA','1605'),
+ ('P1465','CONTAMANA','1606'),
+ ('P1466','INAHUAYA','1606'),
+ ('P1467','PADRE MARQUEZ','1606'),
+ ('P1468','PAMPA HERMOSA','1606'),
+ ('P1469','SARAYACU','1606'),
+ ('P1470','VARGAS GUERRA','1606'),
+ ('P1471','BARRANCA','1607'),
+ ('P1472','CAHUAPANAS','1607'),
+ ('P1473','MANSERICHE','1607'),
+ ('P1474','MORONA','1607'),
+ ('P1475','PASTAZA','1607'),
+ ('P1476','ANDOAS','1607'),
+ ('P1477','TAMBOPATA','1701'),
+ ('P1478','INAMBARI','1701'),
+ ('P1479','LAS PIEDRAS','1701'),
+ ('P1480','LABERINTO','1701'),
+ ('P1481','MANU','1702'),
+ ('P1482','FITZCARRALD','1702'),
+ ('P1483','MADRE DE DIOS','1702'),
+ ('P1484','HUEPETUHE','1702'),
+ ('P1485','IÑAPARI','1703'),
+ ('P1486','IBERIA','1703'),
+ ('P1487','TAHUAMANU','1703'),
+ ('P1488','MOQUEGUA','1801'),
+ ('P1489','CARUMAS','1801'),
+ ('P1490','CUCHUMBAYA','1801'),
+ ('P1491','SAMEGUA','1801'),
+ ('P1492','SAN CRISTOBAL','1801'),
+ ('P1493','TORATA','1801'),
+ ('P1494','OMATE','1802'),
+ ('P1495','CHOJATA','1802'),
+ ('P1496','COALAQUE','1802'),
+ ('P1497','ICHUÑA','1802'),
+ ('P1498','LA CAPILLA','1802'),
+ ('P1499','LLOQUE','1802'),
+ ('P1500','MATALAQUE','1802'),
+ ('P1501','PUQUINA','1802'),
+ ('P1502','QUINISTAQUILLAS','1802'),
+ ('P1503','UBINAS','1802'),
+ ('P1504','YUNGA','1802'),
+ ('P1505','ILO','1803'),
+ ('P1506','EL ALGARROBAL','1803'),
+ ('P1507','PACOCHA','1803'),
+ ('P1508','CHAUPIMARCA','1901'),
+ ('P1509','HUACHON','1901'),
+ ('P1510','HUARIACA','1901'),
+ ('P1511','HUAYLLAY','1901'),
+ ('P1512','NINACACA','1901'),
+ ('P1513','PALLANCHACRA','1901'),
+ ('P1514','PAUCARTAMBO','1901'),
+ ('P1515','SAN FRANCISCO DE ASIS DE YARUSYACAN','1901'),
+ ('P1516','SIMON BOLIVAR','1901'),
+ ('P1517','TICLACAYAN','1901'),
+ ('P1518','TINYAHUARCO','1901'),
+ ('P1519','VICCO','1901'),
+ ('P1520','YANACANCHA','1901'),
+ ('P1521','YANAHUANCA','1902'),
+ ('P1522','CHACAYAN','1902'),
+ ('P1523','GOYLLARISQUIZGA','1902'),
+ ('P1524','PAUCAR','1902'),
+ ('P1525','SAN PEDRO DE PILLAO','1902'),
+ ('P1526','SANTA ANA DE TUSI','1902'),
+ ('P1527','TAPUC','1902'),
+ ('P1528','VILCABAMBA','1902'),
+ ('P1529','OXAPAMPA','1903'),
+ ('P1530','CHONTABAMBA','1903'),
+ ('P1531','HUANCABAMBA','1903'),
+ ('P1532','PALCAZU','1903'),
+ ('P1533','POZUZO','1903'),
+ ('P1534','PUERTO BERMUDEZ','1903'),
+ ('P1535','VILLA RICA','1903'),
+ ('P1536','PIURA','2001'),
+ ('P1537','CASTILLA','2001'),
+ ('P1538','CATACAOS','2001'),
+ ('P1539','CURA MORI','2001'),
+ ('P1540','EL TALLAN','2001'),
+ ('P1541','LA ARENA','2001'),
+ ('P1542','LA UNION','2001'),
+ ('P1543','LAS LOMAS','2001'),
+ ('P1544','TAMBO GRANDE','2001'),
+ ('P1545','AYABACA','2002'),
+ ('P1546','FRIAS','2002'),
+ ('P1547','JILILI','2002'),
+ ('P1548','LAGUNAS','2002'),
+ ('P1549','MONTERO','2002'),
+ ('P1550','PACAIPAMPA','2002'),
+ ('P1551','PAIMAS','2002'),
+ ('P1552','SAPILLICA','2002'),
+ ('P1553','SICCHEZ','2002'),
+ ('P1554','SUYO','2002'),
+ ('P1555','HUANCABAMBA','2003'),
+ ('P1556','CANCHAQUE','2003'),
+ ('P1557','EL CARMEN DE LA FRONTERA','2003'),
+ ('P1558','HUARMACA','2003'),
+ ('P1559','LALAQUIZ','2003'),
+ ('P1560','SAN MIGUEL DE EL FAIQUE','2003'),
+ ('P1561','SONDOR','2003'),
+ ('P1562','SONDORILLO','2003'),
+ ('P1563','CHULUCANAS','2004'),
+ ('P1564','BUENOS AIRES','2004'),
+ ('P1565','CHALACO','2004'),
+ ('P1566','LA MATANZA','2004'),
+ ('P1567','MORROPON','2004'),
+ ('P1568','SALITRAL','2004'),
+ ('P1569','SAN JUAN DE BIGOTE','2004'),
+ ('P1570','SANTA CATALINA DE MOSSA','2004'),
+ ('P1571','SANTO DOMINGO','2004'),
+ ('P1572','YAMANGO','2004'),
+ ('P1573','PAITA','2005'),
+ ('P1574','AMOTAPE','2005'),
+ ('P1575','ARENAL','2005'),
+ ('P1576','COLAN','2005'),
+ ('P1577','LA HUACA','2005'),
+ ('P1578','TAMARINDO','2005'),
+ ('P1579','VICHAYAL','2005'),
+ ('P1580','SULLANA','2006'),
+ ('P1581','BELLAVISTA','2006'),
+ ('P1582','IGNACIO ESCUDERO','2006'),
+ ('P1583','LANCONES','2006'),
+ ('P1584','MARCAVELICA','2006'),
+ ('P1585','MIGUEL CHECA','2006'),
+ ('P1586','QUERECOTILLO','2006'),
+ ('P1587','SALITRAL','2006'),
+ ('P1588','PARIÑAS','2007'),
+ ('P1589','EL ALTO','2007'),
+ ('P1590','LA BREA','2007'),
+ ('P1591','LOBITOS','2007'),
+ ('P1592','LOS ORGANOS','2007'),
+ ('P1593','MANCORA','2007'),
+ ('P1594','SECHURA','2008'),
+ ('P1595','BELLAVISTA DE LA UNION','2008'),
+ ('P1596','BERNAL','2008'),
+ ('P1597','CRISTO NOS VALGA','2008'),
+ ('P1598','VICE','2008'),
+ ('P1599','RINCONADA LLICUAR','2008'),
+ ('P1600','PUNO','2101'),
+ ('P1601','ACORA','2101'),
+ ('P1602','AMANTANI','2101'),
+ ('P1603','ATUNCOLLA','2101'),
+ ('P1604','CAPACHICA','2101'),
+ ('P1605','CHUCUITO','2101'),
+ ('P1606','COATA','2101'),
+ ('P1607','HUATA','2101'),
+ ('P1608','MAÑAZO','2101'),
+ ('P1609','PAUCARCOLLA','2101'),
+ ('P1610','PICHACANI','2101'),
+ ('P1611','PLATERIA','2101'),
+ ('P1612','SAN ANTONIO','2101'),
+ ('P1613','TIQUILLACA','2101'),
+ ('P1614','VILQUE','2101'),
+ ('P1615','AZANGARO','2102'),
+ ('P1616','ACHAYA','2102'),
+ ('P1617','ARAPA','2102'),
+ ('P1618','ASILLO','2102'),
+ ('P1619','CAMINACA','2102'),
+ ('P1620','CHUPA','2102'),
+ ('P1621','JOSE DOMINGO CHOQUEHUANCA','2102'),
+ ('P1622','MUÑANI','2102'),
+ ('P1623','POTONI','2102'),
+ ('P1624','SAMAN','2102'),
+ ('P1625','SAN ANTON','2102'),
+ ('P1626','SAN JOSE','2102'),
+ ('P1627','SAN JUAN DE SALINAS','2102'),
+ ('P1628','SANTIAGO DE PUPUJA','2102'),
+ ('P1629','TIRAPATA','2102'),
+ ('P1630','MACUSANI','2103'),
+ ('P1631','AJOYANI','2103'),
+ ('P1632','AYAPATA','2103'),
+ ('P1633','COASA','2103'),
+ ('P1634','CORANI','2103'),
+ ('P1635','CRUCERO','2103'),
+ ('P1636','ITUATA','2103'),
+ ('P1637','OLLACHEA','2103'),
+ ('P1638','SAN GABAN','2103'),
+ ('P1639','USICAYOS','2103'),
+ ('P1640','JULI','2104'),
+ ('P1641','DESAGUADERO','2104'),
+ ('P1642','HUACULLANI','2104'),
+ ('P1643','KELLUYO','2104'),
+ ('P1644','PISACOMA','2104'),
+ ('P1645','POMATA','2104'),
+ ('P1646','ZEPITA','2104'),
+ ('P1647','ILAVE','2105'),
+ ('P1648','CAPAZO','2105'),
+ ('P1649','PILCUYO','2105'),
+ ('P1650','SANTA ROSA','2105'),
+ ('P1651','CONDURIRI','2105'),
+ ('P1652','HUANCANE','2106'),
+ ('P1653','COJATA','2106'),
+ ('P1654','HUATASANI','2106'),
+ ('P1655','INCHUPALLA','2106'),
+ ('P1656','PUSI','2106'),
+ ('P1657','ROSASPATA','2106'),
+ ('P1658','TARACO','2106'),
+ ('P1659','VILQUE CHICO','2106'),
+ ('P1660','LAMPA','2107'),
+ ('P1661','CABANILLA','2107'),
+ ('P1662','CALAPUJA','2107'),
+ ('P1663','NICASIO','2107'),
+ ('P1664','OCUVIRI','2107'),
+ ('P1665','PALCA','2107'),
+ ('P1666','PARATIA','2107'),
+ ('P1667','PUCARA','2107'),
+ ('P1668','SANTA LUCIA','2107'),
+ ('P1669','VILAVILA','2107'),
+ ('P1670','AYAVIRI','2108'),
+ ('P1671','ANTAUTA','2108'),
+ ('P1672','CUPI','2108'),
+ ('P1673','LLALLI','2108'),
+ ('P1674','MACARI','2108'),
+ ('P1675','NUÑOA','2108'),
+ ('P1676','ORURILLO','2108'),
+ ('P1677','SANTA ROSA','2108'),
+ ('P1678','UMACHIRI','2108'),
+ ('P1679','MOHO','2109'),
+ ('P1680','CONIMA','2109'),
+ ('P1681','HUAYRAPATA','2109'),
+ ('P1682','TILALI','2109'),
+ ('P1683','PUTINA','2110'),
+ ('P1684','ANANEA','2110'),
+ ('P1685','PEDRO VILCA APAZA','2110'),
+ ('P1686','QUILCAPUNCU','2110'),
+ ('P1687','SINA','2110'),
+ ('P1688','JULIACA','2111'),
+ ('P1689','CABANA','2111'),
+ ('P1690','CABANILLAS','2111'),
+ ('P1691','CARACOTO','2111'),
+ ('P1692','SANDIA','2112'),
+ ('P1693','CUYOCUYO','2112'),
+ ('P1694','LIMBANI','2112'),
+ ('P1695','PATAMBUCO','2112'),
+ ('P1696','PHARA','2112'),
+ ('P1697','QUIACA','2112'),
+ ('P1698','SAN JUAN DEL ORO','2112'),
+ ('P1699','YANAHUAYA','2112'),
+ ('P1700','ALTO INAMBARI','2112'),
+ ('P1701','SAN PEDRO DE PUTINA PUNCO','2112'),
+ ('P1702','YUNGUYO','2113'),
+ ('P1703','ANAPIA','2113'),
+ ('P1704','COPANI','2113'),
+ ('P1705','CUTURAPI','2113'),
+ ('P1706','OLLARAYA','2113'),
+ ('P1707','TINICACHI','2113'),
+ ('P1708','UNICACHI','2113'),
+ ('P1709','MOYOBAMBA','2201'),
+ ('P1710','CALZADA','2201'),
+ ('P1711','HABANA','2201'),
+ ('P1712','JEPELACIO','2201'),
+ ('P1713','SORITOR','2201'),
+ ('P1714','YANTALO','2201'),
+ ('P1715','BELLAVISTA','2202'),
+ ('P1716','ALTO BIAVO','2202'),
+ ('P1717','BAJO BIAVO','2202'),
+ ('P1718','HUALLAGA','2202'),
+ ('P1719','SAN PABLO','2202'),
+ ('P1720','SAN RAFAEL','2202'),
+ ('P1721','SAN JOSE DE SISA','2203'),
+ ('P1722','AGUA BLANCA','2203'),
+ ('P1723','SAN MARTIN','2203'),
+ ('P1724','SANTA ROSA','2203'),
+ ('P1725','SHATOJA','2203'),
+ ('P1726','SAPOSOA','2204'),
+ ('P1727','ALTO SAPOSOA','2204'),
+ ('P1728','EL ESLABON','2204'),
+ ('P1729','PISCOYACU','2204'),
+ ('P1730','SACANCHE','2204'),
+ ('P1731','TINGO DE SAPOSOA','2204'),
+ ('P1732','LAMAS','2205'),
+ ('P1733','ALONSO DE ALVARADO','2205'),
+ ('P1734','BARRANQUITA','2205'),
+ ('P1735','CAYNARACHI','2205'),
+ ('P1736','CUÑUMBUQUI','2205'),
+ ('P1737','PINTO RECODO','2205'),
+ ('P1738','RUMISAPA','2205'),
+ ('P1739','SAN ROQUE DE CUMBAZA','2205'),
+ ('P1740','SHANAO','2205'),
+ ('P1741','TABALOSOS','2205'),
+ ('P1742','ZAPATERO','2205'),
+ ('P1743','JUANJUI','2206'),
+ ('P1744','CAMPANILLA','2206'),
+ ('P1745','HUICUNGO','2206'),
+ ('P1746','PACHIZA','2206'),
+ ('P1747','PAJARILLO','2206'),
+ ('P1748','PICOTA','2207'),
+ ('P1749','BUENOS AIRES','2207'),
+ ('P1750','CASPISAPA','2207'),
+ ('P1751','PILLUANA','2207'),
+ ('P1752','PUCACACA','2207'),
+ ('P1753','SAN CRISTOBAL','2207'),
+ ('P1754','SAN HILARION','2207'),
+ ('P1755','SHAMBOYACU','2207'),
+ ('P1756','TINGO DE PONASA','2207'),
+ ('P1757','TRES UNIDOS','2207'),
+ ('P1758','RIOJA','2208'),
+ ('P1759','AWAJUN','2208'),
+ ('P1760','ELIAS SOPLIN VARGAS','2208'),
+ ('P1761','NUEVA CAJAMARCA','2208'),
+ ('P1762','PARDO MIGUEL','2208'),
+ ('P1763','POSIC','2208'),
+ ('P1764','SAN FERNANDO','2208'),
+ ('P1765','YORONGOS','2208'),
+ ('P1766','YURACYACU','2208'),
+ ('P1767','TARAPOTO','2209'),
+ ('P1768','ALBERTO LEVEAU','2209'),
+ ('P1769','CACATACHI','2209'),
+ ('P1770','CHAZUTA','2209'),
+ ('P1771','CHIPURANA','2209'),
+ ('P1772','EL PORVENIR','2209'),
+ ('P1773','HUIMBAYOC','2209'),
+ ('P1774','JUAN GUERRA','2209'),
+ ('P1775','LA BANDA DE SHILCAYO','2209'),
+ ('P1776','MORALES','2209'),
+ ('P1777','PAPAPLAYA','2209'),
+ ('P1778','SAN ANTONIO','2209'),
+ ('P1779','SAUCE','2209'),
+ ('P1780','SHAPAJA','2209'),
+ ('P1781','TOCACHE','2210'),
+ ('P1782','NUEVO PROGRESO','2210'),
+ ('P1783','POLVORA','2210'),
+ ('P1784','SHUNTE','2210'),
+ ('P1785','UCHIZA','2210'),
+ ('P1786','TACNA','2301'),
+ ('P1787','ALTO DE LA ALIANZA','2301'),
+ ('P1788','CALANA','2301'),
+ ('P1789','CIUDAD NUEVA','2301'),
+ ('P1790','INCLAN','2301'),
+ ('P1791','PACHIA','2301'),
+ ('P1792','PALCA','2301'),
+ ('P1793','POCOLLAY','2301'),
+ ('P1794','SAMA','2301'),
+ ('P1795','CORONEL GREGORIO ALBARRACIN LANCHIPA','2301'),
+ ('P1796','CANDARAVE','2302'),
+ ('P1797','CAIRANI','2302'),
+ ('P1798','CAMILACA','2302'),
+ ('P1799','CURIBAYA','2302'),
+ ('P1800','HUANUARA','2302'),
+ ('P1801','QUILAHUANI','2302'),
+ ('P1802','LOCUMBA','2303'),
+ ('P1803','ILABAYA','2303'),
+ ('P1804','ITE','2303'),
+ ('P1805','TARATA','2304'),
+ ('P1806','HEROES ALBARRACIN','2304'),
+ ('P1807','ESTIQUE','2304'),
+ ('P1808','ESTIQUE-PAMPA','2304'),
+ ('P1809','SITAJARA','2304'),
+ ('P1810','SUSAPAYA','2304'),
+ ('P1811','TARUCACHI','2304'),
+ ('P1812','TICACO','2304'),
+ ('P1813','TUMBES','2401'),
+ ('P1814','CORRALES','2401'),
+ ('P1815','LA CRUZ','2401'),
+ ('P1816','PAMPAS DE HOSPITAL','2401'),
+ ('P1817','SAN JACINTO','2401'),
+ ('P1818','SAN JUAN DE LA VIRGEN','2401'),
+ ('P1819','ZORRITOS','2402'),
+ ('P1820','CASITAS','2402'),
+ ('P1821','CANOAS DE PUNTA SAL','2402'),
+ ('P1822','ZARUMILLA','2403'),
+ ('P1823','AGUAS VERDES','2403'),
+ ('P1824','MATAPALO','2403'),
+ ('P1825','PAPAYAL','2403'),
+ ('P1826','CALLERIA','2501'),
+ ('P1827','CAMPOVERDE','2501'),
+ ('P1828','IPARIA','2501'),
+ ('P1829','MASISEA','2501'),
+ ('P1830','YARINACOCHA','2501'),
+ ('P1831','NUEVA REQUENA','2501'),
+ ('P1832','MANANTAY','2501'),
+ ('P1833','RAYMONDI','2502'),
+ ('P1834','SEPAHUA','2502'),
+ ('P1835','TAHUANIA','2502'),
+ ('P1836','YURUA','2502'),
+ ('P1837','PADRE ABAD','2503'),
+ ('P1838','IRAZOLA','2503'),
+ ('P1839','CURIMANA','2503'),
+ ('P1840','PURUS','2504');
+/*!40000 ALTER TABLE `distrito` ENABLE KEYS */;
+
+
+--
+-- Definition of table `encriptacion`
+--
+
+DROP TABLE IF EXISTS `encriptacion`;
+CREATE TABLE `encriptacion` (
+  `idencriptacion` int(11) NOT NULL AUTO_INCREMENT,
+  `hassh` varchar(100) NOT NULL,
+  `idarchivo` int(11) NOT NULL,
+  PRIMARY KEY (`idencriptacion`),
+  KEY `archivo1_idx` (`idarchivo`),
+  CONSTRAINT `archivo1` FOREIGN KEY (`idarchivo`) REFERENCES `archivo` (`idarchivo`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `encriptacion`
+--
+
+/*!40000 ALTER TABLE `encriptacion` DISABLE KEYS */;
+INSERT INTO `encriptacion` (`idencriptacion`,`hassh`,`idarchivo`) VALUES 
+ (1,'dcb0133d3a11581f82e94d65d5987801cce74feb',1),
+ (2,'12034fdaee8ef512fa1eb356ba0faf951406f9a2',2);
+/*!40000 ALTER TABLE `encriptacion` ENABLE KEYS */;
+
+
+--
+-- Definition of table `permiso`
+--
+
+DROP TABLE IF EXISTS `permiso`;
+CREATE TABLE `permiso` (
+  `idpermiso` int(11) NOT NULL AUTO_INCREMENT,
+  `nom_per` varchar(45) NOT NULL,
+  `descrip` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`idpermiso`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `permiso`
+--
+
+/*!40000 ALTER TABLE `permiso` DISABLE KEYS */;
+INSERT INTO `permiso` (`idpermiso`,`nom_per`,`descrip`) VALUES 
+ (1,'LISTA PERMISOS','Listado de permisos'),
+ (2,'REGISTRO','Registro de nacimiento, matrimonio y defunción'),
+ (3,'ARCHIVOS','Subida de documentos (Expedientes y constancias)'),
+ (4,'TIPO DOCUMENTO','Mantenimiento de los tipos de documentos'),
+ (5,'LISTADO TIPO REGISTRO','Tipos de registros (Nacimiento, matrimonio y defunción)'),
+ (6,'LIBRO','Mantenimiento de los libros'),
+ (7,'DECLARANTES','Datos de los declarantes'),
+ (8,'TIPOS DE USUARIO','Tipos de usuario del sistema'),
+ (9,'ACTUALIZAR PASSWORD','Actualizar su contraseña para el acceso al sistema'),
+ (10,'LISTA USUARIOS','Lista de usuarios del sistema'),
+ (11,'ASIGNAR PERMISO A USUARIO','Asignar permisos a los usuarios'),
+ (12,'CONFIGURAR IMPRESORA','sdkj'),
+ (13,'DIRECTORIO','Datos del directorio donde se guardan los documentos'),
+ (14,'LISTA ARCHIVOS','LISTADO DE ARCHIVOS'),
+ (15,'HASH ARCHIVOS','LISTADO DE HASH DE ARCHIVOS'),
+ (16,'VALIDAR ARCHIVOS','VALIDACION DE ARCHIVOS'),
+ (17,'ASIGNAR DECLARANTES','Asiganos declarantes para cada tipo registro'),
+ (18,'ASIGNAR LIBROS','Se debe de asignar los libros a los registros.');
+/*!40000 ALTER TABLE `permiso` ENABLE KEYS */;
+
+
+--
+-- Definition of table `persona`
+--
+
+DROP TABLE IF EXISTS `persona`;
+CREATE TABLE `persona` (
+  `idpersona` int(11) NOT NULL AUTO_INCREMENT,
+  `dni` varchar(8) DEFAULT NULL,
+  `nombre` varchar(45) NOT NULL,
+  `apellido` varchar(45) NOT NULL,
+  `genero` varchar(15) NOT NULL,
+  `direccion` varchar(85) NOT NULL,
+  `fec_nac` date DEFAULT NULL,
+  `hor_nac` time DEFAULT NULL,
+  PRIMARY KEY (`idpersona`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `persona`
+--
+
+/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
+INSERT INTO `persona` (`idpersona`,`dni`,`nombre`,`apellido`,`genero`,`direccion`,`fec_nac`,`hor_nac`) VALUES 
+ (1,'72080489','ALDO OMAR','MORALES CARLOS','MASCULINO','JR. LA LIBERTAD','2018-02-08','11:30:00'),
+ (2,'34839483','DANIEL LUIS','ACEVEDO JHONG','MASCULINO','AV. SAN MARTIN','1995-02-06','15:41:00'),
+ (3,'93483948','MIGUEL VICENTE','AGURTO RONDOY','MASCULINO','AV. SAN MARTIN','1900-01-01','00:00:00'),
+ (4,'39843497','CHRISTIAN NELSON','ALCALÁ NEGRÓN','MASCULINO','JR. CASA BLANCA','1996-02-06','15:41:00'),
+ (5,'04837762','RAUL EDUARDO','ALMORA HERNANDEZ','MASCULINO','JR. CASA BLANCA','1900-01-01','00:00:00'),
+ (6,'48239398','ROSARIO','ARIAS HERNANDEZ','FEMENINO','AV. MANCO CAPAC','1900-01-01','00:00:00'),
+ (7,'03863983','ISELA FLOR','BAYLÓN ROJAS','FEMENINO','CALLE LAS CIRUELAS','1993-03-11','04:56:00'),
+ (8,'84829927','LEONCIA','BEDOYA CASTILLO','FEMENINO','CALLE LAS CIRUELAS','1900-01-01','00:00:00'),
+ (9,'56477382','JAVIER','BENAVIDES ESPEJO','MASCULINO','AV. PANAMERICA','1974-03-14','16:01:00'),
+ (10,'34958736','GIZELLA','CARRERA ABANTO','FEMENINO','AV. PANAMERICA','1900-01-01','00:00:00'),
+ (11,'24948398','ZARITA','CHANCOS MENDOZA','FEMENINO','JR. BOLOGNESI','1983-06-08','16:05:00'),
+ (12,'74883762','CARLOS','CHIRINOS LACOTERA','MASCULINO','JR. BOLOGNESI','1900-01-01','00:00:00'),
+ (13,'93837363','EDWIN','ESPINOZA ARANA','MASCULINO','JR. LA CHOSA','1975-05-14','00:00:00'),
+ (14,'38734838','YULIANA','FLORES ROMERO','FEMENINO','JR. LA CHOSA','1978-02-06','00:00:00'),
+ (15,'45985885','ROBERTO','GAMARRA ASTETE','MASCULINO','AV. SAN BORJA','1981-09-18','00:00:00'),
+ (16,'38473477','MARLENE','GUZMAN QUISPE','FEMENINO','AV. SAN ISIDRO','1984-11-13','00:00:00'),
+ (17,'47384739','MARCOS','MALDONADO QUISPE','MASCULINO','AV. MIGUEL GRAU','1988-02-11','00:00:00'),
+ (18,'39483727','LOURDES','HUAMANI FLORES','FEMENINO','AV. MIGUEL GRAU','1990-07-21','00:00:00'),
+ (19,'23983594','JUAN ELVIS','RIQUELME MIRANDA','MASCULINO','AV. SANTA ROSA','1991-02-27','00:00:00'),
+ (20,'23872334','JACQUELIN','TRUJILLO PARODI','FEMENINO','AV. SANTA ROSA','1990-11-23','16:44:00'),
+ (21,'34093409','MONICA','ZAPATA CHANG','FEMENINO','CALLE LOS IRACUNDOS','1979-02-09','00:00:00'),
+ (22,'34340934','CECILIA','YAMAWAKI ONAGA','FEMENINO','PASAJE CHORILLOS','1900-01-01','00:00:00'),
+ (23,'12984934','ROSA LILIANA','ROBLES VALVERDE','FEMENINO','AV. RAMON CASTILLA','1998-05-16','19:11:00'),
+ (24,'09737552','ENRIQUE','PINEDO NUÑEZ','MASCULINO','AV. RAMON CASTILLA','1900-01-01','00:00:00'),
+ (25,'34873847','MIGUEL ANGEL','SILVA ZAPATA','MASCULINO','CALLE SANTA ROSA','1976-09-09','11:34:00');
+/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
+
+
+--
+-- Definition of table `provincia`
+--
+
+DROP TABLE IF EXISTS `provincia`;
+CREATE TABLE `provincia` (
+  `idprovincia` char(6) NOT NULL,
+  `nomprov` varchar(45) NOT NULL,
+  `iddepartamento` char(6) NOT NULL,
+  PRIMARY KEY (`idprovincia`),
+  KEY `departamento1_idx` (`iddepartamento`),
+  CONSTRAINT `departamento1` FOREIGN KEY (`iddepartamento`) REFERENCES `departamento` (`iddepartamento`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `provincia`
+--
+
+/*!40000 ALTER TABLE `provincia` DISABLE KEYS */;
+INSERT INTO `provincia` (`idprovincia`,`nomprov`,`iddepartamento`) VALUES 
+ ('0101','CHACHAPOYAS','01'),
+ ('0102','BAGUA','01'),
+ ('0103','BONGARA','01'),
+ ('0104','CONDORCANQUI','01'),
+ ('0105','LUYA','01'),
+ ('0106','RODRIGUEZ DE MENDOZA','01'),
+ ('0107','UTCUBAMBA','01'),
+ ('0201','HUARAZ','02'),
+ ('0202','AIJA','02'),
+ ('0203','ANTONIO RAYMONDI','02'),
+ ('0204','ASUNCION','02'),
+ ('0205','BOLOGNESI','02'),
+ ('0206','CARHUAZ','02'),
+ ('0207','CARLOS FERMIN FITZCARRALD','02'),
+ ('0208','CASMA','02'),
+ ('0209','CORONGO','02'),
+ ('0210','HUARI','02'),
+ ('0211','HUARMEY','02'),
+ ('0212','HUAYLAS','02'),
+ ('0213','MARISCAL LUZURIAGA','02'),
+ ('0214','OCROS','02'),
+ ('0215','PALLASCA','02'),
+ ('0216','POMABAMBA','02'),
+ ('0217','RECUAY','02'),
+ ('0218','SANTA','02'),
+ ('0219','SIHUAS','02'),
+ ('0220','YUNGAY','02'),
+ ('0301','ABANCAY','03'),
+ ('0302','ANDAHUAYLAS','03'),
+ ('0303','ANTABAMBA','03'),
+ ('0304','AYMARAES','03'),
+ ('0305','COTABAMBAS','03'),
+ ('0306','CHINCHEROS','03'),
+ ('0307','GRAU','03'),
+ ('0401','AREQUIPA','04'),
+ ('0402','CAMANA','04'),
+ ('0403','CARAVELI','04'),
+ ('0404','CASTILLA','04'),
+ ('0405','CAYLLOMA','04'),
+ ('0406','CONDESUYOS','04'),
+ ('0407','ISLAY','04'),
+ ('0408','LA UNION','04'),
+ ('0501','HUAMANGA','05'),
+ ('0502','CANGALLO','05'),
+ ('0503','HUANCA SANCOS','05'),
+ ('0504','HUANTA','05'),
+ ('0505','LA MAR','05'),
+ ('0506','LUCANAS','05'),
+ ('0507','PARINACOCHAS','05'),
+ ('0508','PAUCAR DEL SARA SARA','05'),
+ ('0509','SUCRE','05'),
+ ('0510','VICTOR FAJARDO','05'),
+ ('0511','VILCAS HUAMAN','05'),
+ ('0601','CAJAMARCA','06'),
+ ('0602','CAJABAMBA','06'),
+ ('0603','CELENDIN','06'),
+ ('0604','CHOTA','06'),
+ ('0605','CONTUMAZA','06'),
+ ('0606','CUTERVO','06'),
+ ('0607','HUALGAYOC','06'),
+ ('0608','JAEN','06'),
+ ('0609','SAN IGNACIO','06'),
+ ('0610','SAN MARCOS','06'),
+ ('0611','SAN MIGUEL','06'),
+ ('0612','SAN PABLO','06'),
+ ('0613','SANTA CRUZ','06'),
+ ('0701','CALLAO','07'),
+ ('0801','CUSCO','08'),
+ ('0802','ACOMAYO','08'),
+ ('0803','ANTA','08'),
+ ('0804','CALCA','08'),
+ ('0805','CANAS','08'),
+ ('0806','CANCHIS','08'),
+ ('0807','CHUMBIVILCAS','08'),
+ ('0808','ESPINAR','08'),
+ ('0809','LA CONVENCION','08'),
+ ('0810','PARURO','08'),
+ ('0811','PAUCARTAMBO','08'),
+ ('0812','QUISPICANCHI','08'),
+ ('0813','URUBAMBA','08'),
+ ('0901','HUANCAVELICA','09'),
+ ('0902','ACOBAMBA','09'),
+ ('0903','ANGARAES','09'),
+ ('0904','CASTROVIRREYNA','09'),
+ ('0905','CHURCAMPA','09'),
+ ('0906','HUAYTARA','09'),
+ ('0907','TAYACAJA','09'),
+ ('1001','HUANUCO','10'),
+ ('1002','AMBO','10'),
+ ('1003','DOS DE MAYO','10'),
+ ('1004','HUACAYBAMBA','10'),
+ ('1005','HUAMALIES','10'),
+ ('1006','LEONCIO PRADO','10'),
+ ('1007','MARAÑON','10'),
+ ('1008','PACHITEA','10'),
+ ('1009','PUERTO INCA','10'),
+ ('1010','LAURICOCHA','10'),
+ ('1011','YAROWILCA','10'),
+ ('1101','ICA','11'),
+ ('1102','CHINCHA','11'),
+ ('1103','NAZCA','11'),
+ ('1104','PALPA','11'),
+ ('1105','PISCO','11'),
+ ('1201','HUANCAYO','12'),
+ ('1202','CONCEPCION','12'),
+ ('1203','CHANCHAMAYO','12'),
+ ('1204','JAUJA','12'),
+ ('1205','JUNIN','12'),
+ ('1206','SATIPO','12'),
+ ('1207','TARMA','12'),
+ ('1208','YAULI','12'),
+ ('1209','CHUPACA','12'),
+ ('1301','TRUJILLO','13'),
+ ('1302','ASCOPE','13'),
+ ('1303','BOLIVAR','13'),
+ ('1304','CHEPEN','13'),
+ ('1305','JULCAN','13'),
+ ('1306','OTUZCO','13'),
+ ('1307','PACASMAYO','13'),
+ ('1308','PATAZ','13'),
+ ('1309','SANCHEZ CARRION','13'),
+ ('1310','SANTIAGO DE CHUCO','13'),
+ ('1311','GRAN CHIMU','13'),
+ ('1312','VIRU','13'),
+ ('1401','CHICLAYO','14'),
+ ('1402','FERREÑAFE','14'),
+ ('1403','LAMBAYEQUE','14'),
+ ('1501','LIMA','15'),
+ ('1502','BARRANCA','15'),
+ ('1503','CAJATAMBO','15'),
+ ('1504','CANTA','15'),
+ ('1505','CAÑETE','15'),
+ ('1506','HUARAL','15'),
+ ('1507','HUAROCHIRI','15'),
+ ('1508','HUAURA','15'),
+ ('1509','OYON','15'),
+ ('1510','YAUYOS','15'),
+ ('1601','MAYNAS','16'),
+ ('1602','ALTO AMAZONAS','16'),
+ ('1603','LORETO','16'),
+ ('1604','MARISCAL RAMON CASTILLA','16'),
+ ('1605','REQUENA','16'),
+ ('1606','UCAYALI','16'),
+ ('1607','DATEM DEL MARAÑON','16'),
+ ('1701','TAMBOPATA','17'),
+ ('1702','MANU','17'),
+ ('1703','TAHUAMANU','17'),
+ ('1801','MARISCAL NIETO','18'),
+ ('1802','GENERAL SANCHEZ CERRO','18'),
+ ('1803','ILO','18'),
+ ('1901','PASCO','19'),
+ ('1902','DANIEL ALCIDES CARRION','19'),
+ ('1903','OXAPAMPA','19'),
+ ('2001','PIURA','20'),
+ ('2002','AYABACA','20'),
+ ('2003','HUANCABAMBA','20'),
+ ('2004','MORROPON','20'),
+ ('2005','PAITA','20'),
+ ('2006','SULLANA','20'),
+ ('2007','TALARA','20'),
+ ('2008','SECHURA','20'),
+ ('2101','PUNO','21'),
+ ('2102','AZANGARO','21'),
+ ('2103','CARABAYA','21'),
+ ('2104','CHUCUITO','21'),
+ ('2105','EL COLLAO','21'),
+ ('2106','HUANCANE','21'),
+ ('2107','LAMPA','21'),
+ ('2108','MELGAR','21'),
+ ('2109','MOHO','21'),
+ ('2110','SAN ANTONIO DE PUTINA','21'),
+ ('2111','SAN ROMAN','21'),
+ ('2112','SANDIA','21'),
+ ('2113','YUNGUYO','21'),
+ ('2201','MOYOBAMBA','22'),
+ ('2202','BELLAVISTA','22'),
+ ('2203','EL DORADO','22'),
+ ('2204','HUALLAGA','22'),
+ ('2205','LAMAS','22'),
+ ('2206','MARISCAL CACERES','22'),
+ ('2207','PICOTA','22'),
+ ('2208','RIOJA','22'),
+ ('2209','SAN MARTIN','22'),
+ ('2210','TOCACHE','22'),
+ ('2301','TACNA','23'),
+ ('2302','CANDARAVE','23'),
+ ('2303','JORGE BASADRE','23'),
+ ('2304','TARATA','23'),
+ ('2401','TUMBES','24'),
+ ('2402','CONTRALMIRANTE VILLAR','24'),
+ ('2403','ZARUMILLA','24'),
+ ('2501','CORONEL PORTILLO','25'),
+ ('2502','ATALAYA','25'),
+ ('2503','PADRE ABAD','25'),
+ ('2504','PURUS','25');
+/*!40000 ALTER TABLE `provincia` ENABLE KEYS */;
+
+
+--
+-- Definition of table `registro`
+--
+
+DROP TABLE IF EXISTS `registro`;
+CREATE TABLE `registro` (
+  `idregistro` int(11) NOT NULL AUTO_INCREMENT,
+  `fec_reg` date NOT NULL,
+  `hra_reg` time NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `idtipo_reg` int(11) NOT NULL,
+  `num_acta` varchar(20) NOT NULL,
+  `fec_even` date NOT NULL,
+  `hra_even` time NOT NULL,
+  PRIMARY KEY (`idregistro`),
+  KEY `Usuario1` (`idusuario`),
+  KEY `tipo_reg1_idx` (`idtipo_reg`),
+  CONSTRAINT `tipo_reg1` FOREIGN KEY (`idtipo_reg`) REFERENCES `tipo_reg` (`idtipo_reg`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `Usuario1` FOREIGN KEY (`idusuario`) REFERENCES `usuario` (`idusuario`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `registro`
+--
+
+/*!40000 ALTER TABLE `registro` DISABLE KEYS */;
+INSERT INTO `registro` (`idregistro`,`fec_reg`,`hra_reg`,`idusuario`,`idtipo_reg`,`num_acta`,`fec_even`,`hra_even`) VALUES 
+ (1,'2018-02-04','15:45:38',1,1,'01010101','2018-02-04','15:45:38'),
+ (2,'2018-02-04','15:52:41',1,1,'02020202','2018-02-04','15:52:41'),
+ (3,'2018-02-04','15:58:29',1,1,'03030303','2018-02-04','15:58:29'),
+ (4,'2018-02-04','16:03:42',1,1,'04040404','2018-02-04','16:03:42'),
+ (5,'2018-02-04','16:07:33',1,1,'05050505','2018-02-04','16:07:33'),
+ (6,'2018-02-04','16:27:05',1,2,'06060606','2010-02-08','10:30:00'),
+ (7,'2018-02-04','16:31:13',1,2,'07070707','2010-02-08','10:30:00'),
+ (8,'2018-02-04','16:47:27',1,2,'08080808','2009-10-30','16:46:00'),
+ (9,'2018-02-04','16:52:11',1,2,'09090909','2012-02-13','14:00:00'),
+ (10,'2018-02-04','16:54:43',1,2,'10101010','2015-02-11','16:54:00'),
+ (11,'2018-02-04','19:02:58',1,3,'11111111','2011-12-23','19:02:00'),
+ (12,'2018-02-04','19:14:24',1,3,'12121212','2007-08-23','22:20:00');
+/*!40000 ALTER TABLE `registro` ENABLE KEYS */;
+
+
+--
+-- Definition of table `stand`
+--
+
+DROP TABLE IF EXISTS `stand`;
+CREATE TABLE `stand` (
+  `idstand` int(11) NOT NULL AUTO_INCREMENT,
+  `num_stand` varchar(20) NOT NULL,
+  `det_stand` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`idstand`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `stand`
+--
+
+/*!40000 ALTER TABLE `stand` DISABLE KEYS */;
+INSERT INTO `stand` (`idstand`,`num_stand`,`det_stand`) VALUES 
+ (1,'N-01','DOCUMENTOS DE NACIMIENTO'),
+ (2,'M-01','DOCUMENTOS DE MATRIMONIO'),
+ (3,'D-01','DOCUMENTOS DE DEFUNCIÓN');
+/*!40000 ALTER TABLE `stand` ENABLE KEYS */;
+
+
+--
+-- Definition of table `tipo_doc`
+--
+
+DROP TABLE IF EXISTS `tipo_doc`;
+CREATE TABLE `tipo_doc` (
+  `idtipo_doc` int(11) NOT NULL AUTO_INCREMENT,
+  `nom_doc` varchar(45) NOT NULL,
+  PRIMARY KEY (`idtipo_doc`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tipo_doc`
+--
+
+/*!40000 ALTER TABLE `tipo_doc` DISABLE KEYS */;
+INSERT INTO `tipo_doc` (`idtipo_doc`,`nom_doc`) VALUES 
+ (1,'CONSTANCIA'),
+ (2,'EXPEDIENTE');
+/*!40000 ALTER TABLE `tipo_doc` ENABLE KEYS */;
+
+
+--
+-- Definition of table `tipo_reg`
+--
+
+DROP TABLE IF EXISTS `tipo_reg`;
+CREATE TABLE `tipo_reg` (
+  `idtipo_reg` int(11) NOT NULL AUTO_INCREMENT,
+  `nomtpo` varchar(45) NOT NULL,
+  PRIMARY KEY (`idtipo_reg`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tipo_reg`
+--
+
+/*!40000 ALTER TABLE `tipo_reg` DISABLE KEYS */;
+INSERT INTO `tipo_reg` (`idtipo_reg`,`nomtpo`) VALUES 
+ (1,'NACIMIENTO'),
+ (2,'MATRIMONIO'),
+ (3,'DEFUNCIÓN');
+/*!40000 ALTER TABLE `tipo_reg` ENABLE KEYS */;
+
+
+--
+-- Definition of table `tipousuario`
+--
+
+DROP TABLE IF EXISTS `tipousuario`;
+CREATE TABLE `tipousuario` (
+  `idtipousuario` int(11) NOT NULL AUTO_INCREMENT,
+  `tpusr` varchar(35) NOT NULL,
+  PRIMARY KEY (`idtipousuario`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tipousuario`
+--
+
+/*!40000 ALTER TABLE `tipousuario` DISABLE KEYS */;
+INSERT INTO `tipousuario` (`idtipousuario`,`tpusr`) VALUES 
+ (1,'ADMINISTRADOR'),
+ (2,'EMPLEADO');
+/*!40000 ALTER TABLE `tipousuario` ENABLE KEYS */;
+
+
+--
+-- Definition of table `usuario`
+--
+
+DROP TABLE IF EXISTS `usuario`;
+CREATE TABLE `usuario` (
+  `idusuario` int(11) NOT NULL AUTO_INCREMENT,
+  `nom` varchar(15) NOT NULL,
+  `psw` varchar(150) NOT NULL,
+  `estado` varchar(10) NOT NULL,
+  `idtipousuario` int(11) NOT NULL,
+  `idpersona` int(11) NOT NULL,
+  PRIMARY KEY (`idusuario`),
+  KEY `tipousuario1` (`idtipousuario`),
+  KEY `Persona1` (`idpersona`),
+  CONSTRAINT `Persona1` FOREIGN KEY (`idpersona`) REFERENCES `persona` (`idpersona`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tipousuario1` FOREIGN KEY (`idtipousuario`) REFERENCES `tipousuario` (`idtipousuario`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `usuario`
+--
+
+/*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
+INSERT INTO `usuario` (`idusuario`,`nom`,`psw`,`estado`,`idtipousuario`,`idpersona`) VALUES 
+ (1,'ALDOMAR','7ce2412be8e293287c35e378b57ac6135c019330','ACTIVO',1,1),
+ (2,'MIGUEL','f865b53623b121fd34ee5426c792e5c33af8c227','DESACTIVO',2,25);
+/*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
+
+
+--
+-- Definition of procedure `countApoderadoRD`
+--
+
+DROP PROCEDURE IF EXISTS `countApoderadoRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `countApoderadoRD`(in dato int(11))
+BEGIN
+set @idregistro=(select r.idregistro from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=dato);
+select count(*)
+from persona p, detregistro dt, apoderado a, registro r
+where p.idpersona=dt.idpersona and a.idapoderado=dt.idapoderado and r.idregistro=dt.idregistro
+and a.idapoderado<>1 and r.idregistro=@idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `countApoderadoRN`
+--
+
+DROP PROCEDURE IF EXISTS `countApoderadoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `countApoderadoRN`(in dato int(11))
+BEGIN
+set @idregistro=(select r.idregistro from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=dato);
+select count(*)
+from persona p, detregistro dt, apoderado a, registro r
+where p.idpersona=dt.idpersona and a.idapoderado=dt.idapoderado and r.idregistro=dt.idregistro
+and a.idapoderado<>1 and r.idregistro=@idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteAntiguosApoRD`
+--
+
+DROP PROCEDURE IF EXISTS `deleteAntiguosApoRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteAntiguosApoRD`(in dniz varchar(8))
+BEGIN
+-- Eliminamos los registros anteriores
+set @idper=(select p.idpersona from detregistro dr, persona p where p.idpersona=dr.idpersona and p.dni=dniz);
+delete from detregistro where idpersona=@idper;
+delete from persona where idpersona=@idper;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteAntiguosApoRN`
+--
+
+DROP PROCEDURE IF EXISTS `deleteAntiguosApoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteAntiguosApoRN`(in dniz varchar(8))
+BEGIN
+-- Eliminamos los registros anteriores
+set @idper=(select p.idpersona from detregistro dr, persona p where p.idpersona=dr.idpersona and p.dni=dniz);
+delete from detregistro where idpersona=@idper;
+delete from persona where idpersona=@idper;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteApoderado`
+--
+
+DROP PROCEDURE IF EXISTS `deleteApoderado`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteApoderado`(in idapoz int(11))
+BEGIN
+set @reg_uso=(select count(*) from apoderado a, detregistro dr where a.idapoderado=dr.idapoderado);
+set @id1=(select idapoderado from apoderado where idapoderado=idapoz);
+if (@id1!=1) then
+    if(@reg_uso=0) then
+      delete from apoderado where idapoderado=idapoz;
+      select 'Se elimino satisfactoriamente.';
+    else
+      select 'El registro que desea eliminar está en uso.';
+    end if;
+else
+  select 'No tiene permisos para eliminar este registro.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `deleteArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteArchivo`(in idarch int(11))
+BEGIN
+-- Declaramos un contador
+declare cont int default 0;
+
+set @idtipodoc=(select td.idtipo_doc from archivo a, tipo_doc td where td.idtipo_doc=a.idtipo_doc and a.idarchivo=idarch);
+set @idregistr=(select r.idregistro from archivo a, registro r where r.idregistro=a.idregistro and a.idarchivo=idarch);
+-- Proceguimos a eliminar el archivo
+set @can_reg=(select count(*) from registro r, archivo a , tipo_doc td
+              where r.idregistro=a.idregistro and td.idtipo_doc=a.idtipo_doc and td.idtipo_doc=@idtipodoc and r.idregistro=@idregistr);
+
+while (cont<@can_reg) do
+      -- Obtenemos los id de los archivos
+      set @idarchivo1=(select a.idarchivo from registro r, archivo a , tipo_doc td
+                      where r.idregistro=a.idregistro and td.idtipo_doc=a.idtipo_doc and td.idtipo_doc=@idtipodoc
+                      and r.idregistro=@idregistr limit 0,1);
+      set @idarchivo2=(select a.idarchivo from registro r, archivo a , tipo_doc td
+                      where r.idregistro=a.idregistro and td.idtipo_doc=a.idtipo_doc and td.idtipo_doc=@idtipodoc
+                      and r.idregistro=@idregistr limit 1,2);
+
+      -- Obtenemos los id de la ancriptacion de cada uno de los archivos
+      set @idencrip1=(select idencriptacion from encriptacion e, archivo a where a.idarchivo=e.idarchivo and a.idarchivo=@idarchivo1);
+      set @idencrip2=(select idencriptacion from encriptacion e, archivo a where a.idarchivo=e.idarchivo and a.idarchivo=@idarchivo2);
+      -- Eliminamos las encriptaciones de los archivos
+      delete from encriptacion where idencriptacion=@idencrip1;
+      delete from encriptacion where idencriptacion=@idencrip2;
+      -- Eliminamos los archivos
+      delete from archivo where idarchivo=@idarchivo1;
+      delete from archivo where idarchivo=@idarchivo2;
+      set cont=cont+1;
+end while;
+select 'Se elimino satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteDirectorio`
+--
+
+DROP PROCEDURE IF EXISTS `deleteDirectorio`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteDirectorio`(in iddir int(11))
+BEGIN
+delete from directorio where iddirectorio=iddir;
+select 'Se elimino satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deletePermiso`
+--
+
+DROP PROCEDURE IF EXISTS `deletePermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deletePermiso`(in idperz int(11))
+BEGIN
+set @reg_uso=(select count(*) from permiso p, detalle_permiso dp where p.idpermiso=dp.idpermiso and p.idpermiso=idperz);
+if(@reg_uso=0) then
+  delete from permiso where idpermiso=idperz;
+  select 'Se elimino satisfactoriamente.';
+else
+  select 'El registro que desea eliminar está en uso.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deletePermisoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `deletePermisoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deletePermisoUsuario`(in idusuz int(11), idperz int(11))
+BEGIN
+delete from detalle_permiso where idusuario=idusuz and idpermiso=idperz;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteStand`
+--
+
+DROP PROCEDURE IF EXISTS `deleteStand`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteStand`(in idstandz int(11))
+BEGIN
+set @reg_uso=(select count(*) from stand s, archivo a where s.idstand=a.idstand);
+if(@reg_uso=0) then
+  delete from stand where idstand=idstandz;
+  select 'Se elimino satisfactoriamente.';
+else
+  select 'El registro que desea eliminar está en uso.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteTipoDocumento`
+--
+
+DROP PROCEDURE IF EXISTS `deleteTipoDocumento`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteTipoDocumento`(in idtipodocz int(11))
+BEGIN
+set @reg_uso=(select count(*) from tipo_doc td, archivo a where td.idtipo_doc=a.idtipo_doc);
+if(@reg_uso=0) then
+  delete from tipo_doc where idtipo_doc=idtipodocz;
+  select 'Se elimino satisfactoriamente.';
+else
+  select 'El registro que desea eliminar está en uso.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteTipoRegistro`
+--
+
+DROP PROCEDURE IF EXISTS `deleteTipoRegistro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteTipoRegistro`(in idtiporegz int(11))
+BEGIN
+set @reg_uso=(select count(*) from tipo_reg tr, registro r where tr.idtipo_reg=r.idtipo_reg);
+if(@reg_uso=0) then
+  delete from tipo_reg where idtipo_reg=idtiporegz;
+  select 'Se elimino satisfactoriamente.';
+else
+  select 'El registro que desea eliminar está en uso.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `deleteTipoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `deleteTipoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteTipoUsuario`(in idtipousuz int(11))
+BEGIN
+set @reg_uso=(select count(*) from tipousuario tu, usuario u where tu.idtipousuario=u.idtipousuario);
+if(@reg_uso=0) then
+  delete from tipousuario where idtipousuario=idtipousuz;
+  select 'Se elimino satisfactoriamente.';
+else
+  select 'El registro que desea eliminar está en uso.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editApoderado`
+--
+
+DROP PROCEDURE IF EXISTS `editApoderado`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editApoderado`(in nomapoz varchar(20), generoz varchar(20), idapoz int(11))
+BEGIN
+set @nomreg=(select nom_apo from apoderado where idapoderado=idapoz);
+set @canreg=(select count(*) from apoderado where nom_apo=nomapoz);
+if(@canreg=0 or @nomreg=nomapoz) then
+  update apoderado set nom_apo=nomapoz, genero=generoz where idapoderado=idapoz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El nombre del apoderado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editApoderadoRD`
+--
+
+DROP PROCEDURE IF EXISTS `editApoderadoRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editApoderadoRD`(in
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date,
+dniz2 varchar(8), idapoderadoz int(11), iddetregist int(11))
+BEGIN
+-- dni ingresado con el dni de la bd son iguales?
+if (dniz=dniz2) then
+    -- Si los registros ya existen solo lo actualizamos
+    set @can_dni=(select count(*) from persona where dni=dniz2);
+    if (@can_dni=1) then
+        update persona p, detregistro dr
+        set p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz,
+        p.fec_nac=fecnacz, dr.idapoderado=idapoderadoz
+        where p.idpersona=dr.idpersona and p.dni=dniz;
+    end if;
+else
+    -- Insertamos si son registros nuevos
+--    set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=iddetregist);
+    set @can_dni=(select count(*) from persona where dni=dniz);
+    if (@can_dni=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, '00:00:00');
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select r.idregistro from registro r, detregistro dr
+        where r.idregistro=dr.idregistro and dr.iddetRegistro=iddetregist);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- else
+        -- select 'El DNI ingresado del apoderado ya existe.';
+    end if;
+end if;
+-- select 'Se actualizo satisfactoriamente los apoderados.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editApoderadoRN`
+--
+
+DROP PROCEDURE IF EXISTS `editApoderadoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editApoderadoRN`(in
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date,
+dniz2 varchar(8), idapoderadoz int(11), iddetregist int(11))
+BEGIN
+-- dni ingresado con el dni de la bd son iguales?
+if (dniz=dniz2) then
+    -- Si los registros ya existen solo lo actualizamos
+    set @can_dni=(select count(*) from persona where dni=dniz2);
+    if (@can_dni=1) then
+        update persona p, detregistro dr
+        set p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz,
+        p.fec_nac=fecnacz, dr.idapoderado=idapoderadoz
+        where p.idpersona=dr.idpersona and p.dni=dniz;
+    end if;
+else
+    -- Eliminamos los registros anteriores
+    -- set @idper=(select p.idpersona from detregistro dr, persona p where p.idpersona=dr.idpersona and p.dni=dniz2);
+    -- delete from detregistro where idpersona=@idper;
+    -- delete from persona where dni=dniz2;
+
+    -- Insertamos si son registros nuevos
+--    set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=iddetregist);
+    set @can_dni=(select count(*) from persona where dni=dniz);
+    if (@can_dni=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, '00:00:00');
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select r.idregistro from registro r, detregistro dr
+        where r.idregistro=dr.idregistro and dr.iddetRegistro=iddetregist);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- else
+        -- select 'El DNI ingresado del apoderado ya existe.';
+    end if;
+end if;
+-- select 'Se actualizo satisfactoriamente los apoderados.';
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `editArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editArchivo`(in direct varchar(250), idstanz int(11), idregz int(11), idtipodocz int(11), idarch int(11),
+hashArchiv varchar(100))
+BEGIN
+update encriptacion set hassh=hashArchiv where idarchivo=idarch;
+update archivo set directorio=direct, idstand=idstanz, idregistro=idregz, idtipo_doc=idtipodocz where idarchivo=idarch;
+select 'Se actualizo satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editDesvalidarArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `editDesvalidarArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editDesvalidarArchivo`(in idarch int(11))
+BEGIN
+update archivo set estado='0' where idarchivo=idarch;
+select 'Archivo desvalidado correctamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editDirectorio`
+--
+
+DROP PROCEDURE IF EXISTS `editDirectorio`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editDirectorio`(in nomdir varchar(100), iddir int(11))
+BEGIN
+-- set @cag_reg=(select count(*) from archivo);
+-- if (@cag_reg=0) then
+  update directorio set ruta_dir=nomdir where iddirectorio=iddir;
+  select 'Se actualizo satisfactoriamente.';
+-- else
+-- select 'No puede actualizar, la carpeta está en uso.';
+-- end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editPasswordUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `editPasswordUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editPasswordUsuario`(in passz varchar(150), idusuz int(11))
+BEGIN
+update usuario set psw=sha1(passz) where idusuario=idusuz;
+select 'Se actualizo satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editPermiso`
+--
+
+DROP PROCEDURE IF EXISTS `editPermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editPermiso`(in nomperz varchar(45), descripz varchar(500), idperz int(11))
+BEGIN
+set @nomreg=(select nom_per from permiso where idpermiso=idperz);
+set @canreg=(select count(*) from permiso where nom_per=nomperz);
+if(@canreg=0 or @nomreg=nomperz) then
+  update permiso set nom_per=nomperz, descrip=descripz where idpermiso=idperz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El nombre del permiso ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editRegistroRD`
+--
+
+DROP PROCEDURE IF EXISTS `editRegistroRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editRegistroRD`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), numactaz varchar(20),
+-- datos de detalle ubicacion
+iddistritoz char(6), iddetregist int(11))
+BEGIN
+set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=iddetregist);
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0 or @reg_dni=dniz) then
+    set @reg_numacta=(select r.num_acta from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=iddetregist);
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0 or @reg_numacta=numactaz) then
+        update persona p, registro r, detregistro dr, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+        set p.dni=dniz, p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz, p.fec_nac=fecnacz,
+        p.hor_nac=hornacz, r.num_acta=numactaz, r.idusuario=idusuz, du.iddistrito=iddistritoz
+        where p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro and
+        di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and dp.iddepartamento=pr.iddepartamento and
+        dr.iddetRegistro=iddetregist;
+        select 'Se actualizo satisfactoriamente.';
+    else
+      select 'El N° del acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editRegistroRM`
+--
+
+DROP PROCEDURE IF EXISTS `editRegistroRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editRegistroRM`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), numactaz varchar(20),
+-- datos de detalle ubicacion
+iddistritoz char(6), iddetregist int(11))
+BEGIN
+if (generoz='MASCULINO') then
+-- Editamos los datos del hombre
+set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=iddetregist);
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0 or @reg_dni=dniz) then
+    set @reg_numacta=(select r.num_acta from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=iddetregist);
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0 or @reg_numacta=numactaz) then
+        update persona p, registro r, detregistro dr, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+        set p.dni=dniz, p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz, p.fec_nac=fecnacz,
+        p.hor_nac=hornacz, r.num_acta=numactaz, r.idusuario=idusuz, du.iddistrito=iddistritoz
+        where p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro and
+        di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and dp.iddepartamento=pr.iddepartamento and
+        dr.iddetRegistro=iddetregist;
+    else
+      select 'El N° del acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado del esposo ya existe.';
+end if;
+
+else
+set @numacta=(select r.num_acta
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and dr.iddetRegistro=iddetregist);
+
+set @iddetr_sposa=(select dr.iddetRegistro
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and r.num_acta=@numacta limit 1,2);
+
+-- Editamos los datos de la mujer
+set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=@iddetr_sposa);
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0 or @reg_dni=dniz) then
+    update persona p, registro r, detregistro dr, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+    set p.dni=dniz, p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz, p.fec_nac=fecnacz,
+    p.hor_nac=hornacz, r.num_acta=numactaz, r.idusuario=idusuz, du.iddistrito=iddistritoz
+    where p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro and
+    di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and dp.iddepartamento=pr.iddepartamento and
+    dr.iddetRegistro=@iddetr_sposa;
+--    select 'Se actualizo satisfactoriamente.';
+else
+  select 'El DNI ingresado de la esposa ya existe.';
+end if;
+
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editRegistroRN`
+--
+
+DROP PROCEDURE IF EXISTS `editRegistroRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editRegistroRN`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), numactaz varchar(20),
+-- datos de detalle ubicacion
+iddistritoz char(6), iddetregist int(11))
+BEGIN
+set @reg_dni=(select p.dni from persona p, detregistro dr where p.idpersona=dr.idpersona and dr.iddetRegistro=iddetregist);
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0 or @reg_dni=dniz) then
+    set @reg_numacta=(select r.num_acta from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=iddetregist);
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0 or @reg_numacta=numactaz) then
+        update persona p, registro r, detregistro dr, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+        set p.dni=dniz, p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz, p.fec_nac=fecnacz,
+        p.hor_nac=hornacz, r.num_acta=numactaz, r.idusuario=idusuz, du.iddistrito=iddistritoz
+        where p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro and
+        di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and dp.iddepartamento=pr.iddepartamento and
+        dr.iddetRegistro=iddetregist;
+        select 'Se actualizo satisfactoriamente.';
+    else
+      select 'El N° del acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editStand`
+--
+
+DROP PROCEDURE IF EXISTS `editStand`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editStand`(in numstandz varchar(20), detstand varchar(100), idstandz int(11))
+BEGIN
+set @nomreg=(select num_stand from stand where idstand=idstandz);
+set @canreg=(select count(*) from stand where num_stand=numstandz);
+if(@canreg=0 or @nomreg=numstandz) then
+  update stand set num_stand=numstandz, det_stand=detstand where idstand=idstandz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El número del stand ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editTipoDocumento`
+--
+
+DROP PROCEDURE IF EXISTS `editTipoDocumento`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editTipoDocumento`(in nomdocz varchar(45), idtipodocz int(11))
+BEGIN
+set @nomreg=(select nom_doc from tipo_doc where idtipo_doc=idtipodocz);
+set @canreg=(select count(*) from tipo_doc where nom_doc=nomdocz);
+if(@canreg=0 or @nomreg=nomdocz) then
+  update tipo_doc set nom_doc=nomdocz where idtipo_doc=idtipodocz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El nombre del documento ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editTipoRegistro`
+--
+
+DROP PROCEDURE IF EXISTS `editTipoRegistro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editTipoRegistro`(in nomregz varchar(45), idtiporegz int(11))
+BEGIN
+set @nomreg=(select nomtpo from tipo_reg where idtipo_reg=idtiporegz);
+set @canreg=(select count(*) from tipo_reg where nomtpo=nomregz);
+if(@canreg=0 or @nomreg=nomregz) then
+  update tipo_reg set nomtpo=nomregz where idtipo_reg=idtiporegz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El nombre del registro ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editTipoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `editTipoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editTipoUsuario`(in tipousuz varchar(45), idtipousuz int(11))
+BEGIN
+set @nomreg=(select tpusr from tipousuario where idtipousuario=idtipousuz);
+set @canreg=(select count(*) from tipousuario where tpusr=tipousuz);
+if(@canreg=0 or @nomreg=tipousuz) then
+  update tipousuario set tpusr=tipousuz where idtipousuario=idtipousuz;
+  select 'Se actualizo satisfactoriamente.';
+else
+  select 'El nombre del tipo usuario ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `editUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editUsuario`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del usuario
+nomusuz varchar(45), pswz varchar(150), estadoz varchar(10), idtipousuarioz int(11), idusuz int(11))
+BEGIN
+set @reg_dni=(select p.dni from persona p, usuario u where p.idpersona=u.idpersona and u.idusuario=idusuz);
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0 or @reg_dni=dniz) then
+  set @reg_usu=(select nom from usuario where idusuario=idusuz);
+  set @can_usu=(select count(*) from usuario where nom=nomusuz);
+  if(@can_usu=0 or @reg_usu=nomusuz) then
+    update persona p, usuario u set p.dni=dniz, p.nombre=nombrez, p.apellido=apellidoz, p.genero=generoz, p.direccion=direccionz,
+    p.fec_nac=fecnacz, p.hor_nac=hornacz, u.nom=nomusuz, u.estado=estadoz, u.idtipousuario=idtipousuarioz
+    where p.idpersona=u.idpersona and u.idusuario=idusuz;
+    select 'Se actualizo satisfactoriamente.';
+  else
+    select 'El usuario ingresado ya existe.';
+  end if;
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `editValidarArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `editValidarArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `editValidarArchivo`(in idarch int(11))
+BEGIN
+update archivo set estado='1' where idarchivo=idarch;
+select 'Archivo validado correctamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertApoderado`
+--
+
+DROP PROCEDURE IF EXISTS `insertApoderado`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertApoderado`(in nomapoz varchar(20), generoz varchar(20))
+BEGIN
+set @canreg=(select count(*) from apoderado where nom_apo=nomapoz);
+if(@canreg=0) then
+  insert into apoderado values(default, nomapoz, generoz);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del apoderado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertApoderadoRD`
+--
+
+DROP PROCEDURE IF EXISTS `insertApoderadoRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertApoderadoRD`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date,
+-- datos de detalle registro
+idapoderadoz int(11))
+BEGIN
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=1) then
+    -- Obtenemos el id de la persona que esta en la BD
+    set @idpersona=(select idpersona from persona where dni=dniz);
+    -- Obtenemos el id del registro ingresado recientemente
+    set @idregistro=(select max(idregistro) from registro);
+    -- Ingresamos en la tabla detalle registro
+    insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- select 'Se ingreso satisfactoriamente los apoderados.';
+else
+if (@can_dni=0) then
+    -- Ingresamos en la tabla persona
+    insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, '00:00:00');
+    -- Obtenemos el id de la persona ingresado recientemente
+    set @idpersona=(select max(idpersona) from persona);
+    -- Obtenemos el id del registro ingresado recientemente
+    set @idregistro=(select max(idregistro) from registro);
+    -- Ingresamos en la tabla detalle registro
+    insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- select 'Se ingreso satisfactoriamente los apoderados.';
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertApoderadoRN`
+--
+
+DROP PROCEDURE IF EXISTS `insertApoderadoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertApoderadoRN`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date,
+-- datos de detalle registro
+idapoderadoz int(11))
+BEGIN
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=1) then
+    -- Obtenemos el id de la persona que esta en la BD
+    set @idpersona=(select idpersona from persona where dni=dniz);
+    -- Obtenemos el id del registro ingresado recientemente
+    set @idregistro=(select max(idregistro) from registro);
+    -- Ingresamos en la tabla detalle registro
+    insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- select 'Se ingreso satisfactoriamente los apoderados.';
+else
+if (@can_dni=0) then
+    -- Ingresamos en la tabla persona
+    insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, '00:00:00');
+    -- Obtenemos el id de la persona ingresado recientemente
+    set @idpersona=(select max(idpersona) from persona);
+    -- Obtenemos el id del registro ingresado recientemente
+    set @idregistro=(select max(idregistro) from registro);
+    -- Ingresamos en la tabla detalle registro
+    insert into detregistro values(default, @idregistro, @idpersona, idapoderadoz);
+    -- select 'Se ingreso satisfactoriamente los apoderados.';
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+
+end if;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `insertArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertArchivo`(in direcz varchar(250), idstanz int(11), idregz int(11), idtipodocz int(11),
+hashArchivo varchar(100))
+BEGIN
+-- Insertamos el archivo
+insert into archivo values(default, curdate(), curtime(), direcz, idstanz, idregz, idtipodocz, '0');
+-- Obtenemos el idarchivo recientemente ingresado
+set @idarch=(select max(idarchivo) from archivo);
+-- Insertamos su encriptacion del archivo
+insert into encriptacion values(default, hashArchivo, @idarch);
+-- select 'Se ingreso satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertAsigLibro`
+--
+
+DROP PROCEDURE IF EXISTS `insertAsigLibro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertAsigLibro`(in idtiporegz int(11), idstandz int(11))
+BEGIN
+insert into detalle_libro values(default, idtiporegz, idstandz);
+  select 'Se guardo satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertDetallePermiso`
+--
+
+DROP PROCEDURE IF EXISTS `insertDetallePermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertDetallePermiso`()
+BEGIN
+set @idusuario=(select max(idusuario) from usuario);
+set @idpermiso=(select idpermiso from permiso where nom_per='ASIGNAR PERMISO A USUARIO');
+insert into detalle_permiso values(default, @idusuario, @idpermiso);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertDirectorio`
+--
+
+DROP PROCEDURE IF EXISTS `insertDirectorio`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertDirectorio`(in nomdir varchar(100))
+BEGIN
+set @canreg=(select count(*) from directorio);
+if(@canreg=0) then
+  insert into directorio values(default, nomdir);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'Ya existe un directorio en la BD.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertPermiso`
+--
+
+DROP PROCEDURE IF EXISTS `insertPermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertPermiso`(in nomperz varchar(45), descripz varchar(500))
+BEGIN
+set @canreg=(select count(*) from permiso where nom_per=nomperz);
+if(@canreg=0) then
+  insert into permiso values(default, nomperz, descripz);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del permiso ya existe.';
+end if;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertPermisoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `insertPermisoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertPermisoUsuario`(in idusuz int(11), idpermiz int(11))
+BEGIN
+insert into detalle_permiso values(default, idusuz, idpermiz);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertRegistroApode`
+--
+
+DROP PROCEDURE IF EXISTS `insertRegistroApode`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertRegistroApode`(in idtiporegz int(11), idapoderadoz int(11))
+BEGIN
+set @can_reg=(select count(*) from apoderado a, tipo_reg tr, aporegistro ar
+where a.idapoderado=ar.idapoderado and tr.idtipo_reg=ar.idtipo_reg and a.idapoderado=idapoderadoz and tr.idtipo_reg=idtiporegz);
+
+if(@can_reg=0) then
+  insert into aporegistro values(default, idapoderadoz, idtiporegz);
+  select 'Se asigno satisfactoriamente.';
+else
+  select 'El tipo registro ya tiene al declarante.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertRegistroRD`
+--
+
+DROP PROCEDURE IF EXISTS `insertRegistroRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertRegistroRD`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), idtiporegz int(11), numactaz varchar(20), fecevenz date, hraevenz time,
+-- datos de detalle registro
+-- idapoderadoz int(11),
+-- datos de detalle ubicacion
+iddistritoz char(6)
+)
+BEGIN
+set @can_dni=(select count(*) from persona where dni=dniz);
+-- Cuando ya existe un registro en la BD
+if (@can_dni=1) then
+      set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+      if (@can_numacta=0) then
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select idpersona from persona where dni=dniz);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, fecevenz, hraevenz);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+      else
+        select 'El número de la acta ingresado ya existe.';
+      end if;
+else
+-- Cuando no existe ningun registro en la BD
+if (@can_dni=0) then
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, hornacz);
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, fecevenz, hraevenz);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+    else
+        select 'El número de la acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+
+end if;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertRegistroRM`
+--
+
+DROP PROCEDURE IF EXISTS `insertRegistroRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertRegistroRM`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), idtiporegz int(11), numactaz varchar(20), fecevenz date, hraevenz time,
+-- datos de detalle registro
+-- idapoderadoz int(11),
+-- datos de detalle ubicacion
+iddistritoz char(6))
+BEGIN
+if (generoz='MASCULINO') then
+-- Ingresamos los datos del esposo
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=1) then
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0) then
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select idpersona from persona where dni=dniz);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, fecevenz, hraevenz);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+    else
+        select 'El número de la acta ingresado ya existe.';
+    end if;
+else
+if (@can_dni=0) then
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, hornacz);
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, fecevenz, hraevenz);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+    else
+        select 'El número de la acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado del esposo ya existe.';
+end if;
+end if;
+else
+  -- Ingresamos los datos de la esposa
+  set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=1) then
+    -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select idpersona from persona where dni=dniz);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+else
+  if (@can_dni=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, hornacz);
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+  else
+    select 'El DNI ingresado de la esposa ya existe.';
+  end if;
+end if;
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertRegistroRN`
+--
+
+DROP PROCEDURE IF EXISTS `insertRegistroRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertRegistroRN`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del registro
+idusuz int(11), idtiporegz int(11), numactaz varchar(20),
+-- datos de detalle registro
+-- idapoderadoz int(11),
+-- datos de detalle ubicacion
+iddistritoz char(6)
+)
+BEGIN
+
+set @can_dni=(select count(*) from persona where dni=dniz);
+-- Cuando ya existe un registro en la BD
+if (@can_dni=1) then
+      set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+      if (@can_numacta=0) then
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select idpersona from persona where dni=dniz);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, curdate(), curtime());
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+      else
+        select 'El número de la acta ingresado ya existe.';
+      end if;
+else
+-- Cuando no existe ningun registro en la BD
+if (@can_dni=0) then
+    set @can_numacta=(select count(*) from registro where num_acta=numactaz);
+    if (@can_numacta=0) then
+        -- Ingresamos en la tabla persona
+        insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, hornacz);
+        -- Obtenemos el id de la persona ingresado recientemente
+        set @idpersona=(select max(idpersona) from persona);
+        -- Ingresamos en la tabla registro
+        insert into registro values(default, curdate(), curtime(), idusuz, idtiporegz, numactaz, curdate(), curtime());
+        -- Obtenemos el id del registro ingresado recientemente
+        set @idregistro=(select max(idregistro) from registro);
+        -- Ingresamos en la tabla detalle registro
+        insert into detregistro values(default, @idregistro, @idpersona, '1');
+        -- Obtenemos el id del detalle registro ingresaso recientemente
+        set @iddetregistro=(select max(iddetRegistro) from detregistro);
+        -- Ingresamos en la tabla detalle ubicacion
+        insert into detalle_ubicacion values(default, iddistritoz, @iddetregistro);
+        select 'Se ingreso satisfactoriamente.';
+    else
+        select 'El número de la acta ingresado ya existe.';
+    end if;
+else
+  select 'El DNI ingresado ya existe.';
+end if;
+
+end if;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertStand`
+--
+
+DROP PROCEDURE IF EXISTS `insertStand`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertStand`(in numstandz varchar(20), detstand varchar(100))
+BEGIN
+set @canreg=(select count(*) from stand where num_stand=numstandz);
+if(@canreg=0) then
+  insert into stand values(default, numstandz, detstand);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del permiso ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertTipoDocumento`
+--
+
+DROP PROCEDURE IF EXISTS `insertTipoDocumento`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertTipoDocumento`(in nomdocz varchar(45))
+BEGIN
+set @canreg=(select count(*) from tipo_doc where nom_doc=nomdocz);
+if(@canreg=0) then
+  insert into tipo_doc values(default, nomdocz);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del documento ya existe.';
+end if;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertTipoRegistro`
+--
+
+DROP PROCEDURE IF EXISTS `insertTipoRegistro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertTipoRegistro`(in nomregz varchar(45))
+BEGIN
+set @canreg=(select count(*) from tipo_reg where nomtpo=nomregz);
+if(@canreg=0) then
+  insert into tipo_reg values(default, nomregz);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del registro ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertTipoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `insertTipoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertTipoUsuario`(in tipousuz varchar(45))
+BEGIN
+set @canreg=(select count(*) from tipousuario where tpusr=tipousuz);
+if(@canreg=0) then
+  insert into tipousuario values(default, tipousuz);
+  select 'Se guardo satisfactoriamente.';
+else
+  select 'El nombre del tipo usuario ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `insertUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `insertUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertUsuario`(in
+-- datos de la persona
+dniz varchar(8), nombrez varchar(45), apellidoz varchar(45), generoz varchar(15), direccionz varchar(85), fecnacz date, hornacz time,
+-- datos del usuario
+nomusuz varchar(45), pswz varchar(150), estadoz varchar(10), idtipousuarioz int(11))
+BEGIN
+set @can_dni=(select count(*) from persona where dni=dniz);
+if (@can_dni=0) then
+  set @can_usu=(select count(*) from usuario where nom=nomusuz);
+  if (@can_usu=0) then
+    insert into persona values(default, dniz, nombrez, apellidoz, generoz, direccionz, fecnacz, hornacz);
+    set @idpersona=(select max(idpersona) from persona);
+    insert into usuario values(default, nomusuz, sha1(pswz), estadoz, idtipousuarioz, @idpersona);
+    select 'Se guardo satisfactoriamente.';
+  else
+    Select 'El usuario ingresado ya existe.';
+  end if;
+else
+  Select 'El DNI ingresado ya existe.';
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listApoderado`
+--
+
+DROP PROCEDURE IF EXISTS `listApoderado`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listApoderado`()
+BEGIN
+select * from apoderado;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivo`()
+BEGIN
+/*
+select a.idarchivo, p.dni, concat(p.apellido,' ',p.nombre) as 'APELLIDOS Y NOMBRES', tr.nomtpo as tipoRegistro, r.num_acta,
+td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg order by a.idarchivo desc;
+*/
+
+select a.idarchivo, p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'APELLIDOS Y NOMBRES', tr.nomtpo as tipoRegistro, r.num_acta,
+td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.estado=0 group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivoReg`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivoReg`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivoReg`(in numac varchar(20))
+BEGIN
+select a.idarchivo, td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, a.directorio
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and r.num_acta=numac group by a.idarchivo order by Archivo asc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivosHash`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivosHash`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivosHash`()
+BEGIN
+/*
+select p.dni, concat(p.apellido,' ',p.nombre) as 'APELLIDOS Y NOMBRES', r.num_acta,
+td.nom_doc as tipoDoc, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, e.hassh, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, u.nom as usuario
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr, encriptacion e, usuario u
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.idarchivo=e.idarchivo and u.idusuario=r.idusuario
+order by a.idarchivo desc;
+*/
+select p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'APELLIDOS Y NOMBRES', r.num_acta,
+td.nom_doc as tipoDoc, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, e.hassh, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, u.nom as usuario
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr, encriptacion e, usuario u
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.idarchivo=e.idarchivo and u.idusuario=r.idusuario
+group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivosHashFiltrar`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivosHashFiltrar`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivosHashFiltrar`(in dato varchar(45))
+BEGIN
+select p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'APELLIDOS Y NOMBRES', r.num_acta,
+td.nom_doc as tipoDoc, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, e.hassh, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, u.nom as usuario
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr, encriptacion e, usuario u
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.idarchivo=e.idarchivo and u.idusuario=r.idusuario
+and tr.nomtpo=dato group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivosImp`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivosImp`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivosImp`()
+BEGIN
+/*
+select distinct(dr.iddetRegistro), p.dni, concat(p.nombre,' ',p.apellido),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg order by a.idarchivo desc;
+*/
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivosImpFiltrar`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivosImpFiltrar`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivosImpFiltrar`(in dato varchar(45))
+BEGIN
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and tr.nomtpo=dato group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listArchivosVal`
+--
+
+DROP PROCEDURE IF EXISTS `listArchivosVal`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listArchivosVal`(in numac varchar(20))
+BEGIN
+select a.idarchivo, td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, a.directorio, a.estado
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and r.num_acta=numac group by a.idarchivo order by Archivo asc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listDetLibro`
+--
+
+DROP PROCEDURE IF EXISTS `listDetLibro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listDetLibro`()
+BEGIN
+select dl.iddetalle_libro, tr.nomtpo, s.num_stand from stand s, tipo_reg tr, detalle_libro dl
+where s.idstand=dl.idstand and tr.idtipo_reg=dl.idtipo_reg;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listDirectorio`
+--
+
+DROP PROCEDURE IF EXISTS `listDirectorio`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listDirectorio`()
+BEGIN
+select * from directorio;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listPermiso`
+--
+
+DROP PROCEDURE IF EXISTS `listPermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listPermiso`()
+BEGIN
+select * from permiso;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listPermisoSis`
+--
+
+DROP PROCEDURE IF EXISTS `listPermisoSis`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listPermisoSis`(in idusuz int(11))
+BEGIN
+SELECT p.idpermiso, p.nom_per
+FROM permiso p
+where idpermiso not in (SELECT idpermiso FROM detalle_permiso dp  where dp.idusuario=idusuz);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listPermisoUsuarioSis`
+--
+
+DROP PROCEDURE IF EXISTS `listPermisoUsuarioSis`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listPermisoUsuarioSis`(in iduserz int(11))
+BEGIN
+select dp.iddetalle_permiso, p.nom_per
+from detalle_permiso dp, usuario u, permiso p
+where u.idusuario=dp.idusuario and p.idpermiso=dp.idpermiso and u.idusuario=iduserz;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistroApode`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistroApode`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistroApode`()
+BEGIN
+select ar.idaporegistro, tr.nomtpo, group_concat(a.nom_apo SEPARATOR ', ') as apoderados
+from apoderado a, tipo_reg tr, aporegistro ar
+where a.idapoderado=ar.idapoderado and tr.idtipo_reg=ar.idtipo_reg
+group by tr.idtipo_reg;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistroRD`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistroRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistroRD`()
+BEGIN
+select dr.iddetRegistro, p.dni, concat(p.nombre,' ',p.apellido), p.fec_nac, r.num_acta, di.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='3';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistroRM`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistroRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistroRM`()
+BEGIN
+select dr.iddetRegistro, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as Esposos, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+group by r.idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistroRN`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistroRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistroRN`()
+BEGIN
+select dr.iddetRegistro, p.dni, concat(p.nombre,' ',p.apellido), p.fec_nac, r.num_acta, di.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='1';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistroSinArchivoRN`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistroSinArchivoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistroSinArchivoRN`()
+BEGIN
+/*
+select r.num_acta, concat(p.apellido,' ',p.nombre), tr.nomtpo, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from persona p inner join detregistro dr on p.idpersona=dr.idpersona inner join registro r on r.idregistro=dr.idregistro
+left join archivo a on r.idregistro=a.idregistro inner join detalle_ubicacion du on dr.iddetRegistro=du.iddetRegistro inner join
+tipo_reg tr on tr.idtipo_reg=r.idtipo_reg
+where a.idregistro is null;
+
+select distinct(r.num_acta), GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'Nombres y apellidos', tr.nomtpo,
+(select count(*) from archivo where idregistro=r.idregistro) as 'N° Doc.'
+from persona p inner join detregistro dr on p.idpersona=dr.idpersona inner join registro r on r.idregistro=dr.idregistro
+left join archivo a on r.idregistro=a.idregistro inner join detalle_ubicacion du on dr.iddetRegistro=du.iddetRegistro inner join
+tipo_reg tr on tr.idtipo_reg=r.idtipo_reg
+where (select count(*) from archivo where idregistro=r.idregistro)<3 group by r.idregistro;
+*/
+
+
+select distinct(r.num_acta),
+if (tr.nomtpo='MATRIMONIO',GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '), concat(p.nombre,' ',p.apellido)) as 'Nombres y apellidos', tr.nomtpo,
+(select count(*) from archivo where idregistro=r.idregistro) as 'N° Doc.'
+from persona p inner join detregistro dr on p.idpersona=dr.idpersona inner join registro r on r.idregistro=dr.idregistro
+left join archivo a on r.idregistro=a.idregistro inner join detalle_ubicacion du on dr.iddetRegistro=du.iddetRegistro inner join
+tipo_reg tr on tr.idtipo_reg=r.idtipo_reg
+where (select count(*) from archivo where idregistro=r.idregistro)<3 group by r.idregistro;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistrosVal`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistrosVal`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistrosVal`()
+BEGIN
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.estado=0 group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listRegistrosValFiltrar`
+--
+
+DROP PROCEDURE IF EXISTS `listRegistrosValFiltrar`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listRegistrosValFiltrar`(in dato varchar(45))
+BEGIN
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and tr.nomtpo=dato and a.estado=0 group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listStand`
+--
+
+DROP PROCEDURE IF EXISTS `listStand`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listStand`()
+BEGIN
+select * from stand;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listTipoDocumento`
+--
+
+DROP PROCEDURE IF EXISTS `listTipoDocumento`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listTipoDocumento`()
+BEGIN
+select * from tipo_doc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listTipoRegistro`
+--
+
+DROP PROCEDURE IF EXISTS `listTipoRegistro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listTipoRegistro`()
+BEGIN
+select * from tipo_reg;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listTipoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `listTipoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listTipoUsuario`()
+BEGIN
+select * from tipousuario;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `listUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listUsuario`()
+BEGIN
+select u.idusuario, u.estado, concat(p.apellido,' ',p.nombre) as 'APELLIDOS Y NOMBRES',u.nom, tu.tpusr
+from usuario u, tipousuario tu, persona p
+where p.idpersona=u.idpersona and tu.idtipousuario=u.idtipousuario;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `listUsuarioSis`
+--
+
+DROP PROCEDURE IF EXISTS `listUsuarioSis`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listUsuarioSis`()
+BEGIN
+select u.idusuario, concat(p.apellido,' ',p.nombre) as 'Apellidos y nombres', u.nom as usuario, tu.tpusr, u.estado
+from usuario u,tipousuario tu, persona p
+where p.idpersona=u.idpersona and tu.idtipousuario=u.idtipousuario;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyApoderadoRD`
+--
+
+DROP PROCEDURE IF EXISTS `modifyApoderadoRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyApoderadoRD`(in dato int(11), cont int(11))
+BEGIN
+set @idregistro=(select r.idregistro from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=dato);
+set @cadenaLimit =concat(' limit ',cont, ',',1);
+set @consulta=
+concat ('select p.dni, p.nombre, p.apellido, p.genero, p.direccion, p.fec_nac, a.nom_apo
+         from persona p, detregistro dt, apoderado a, registro r
+         where p.idpersona=dt.idpersona and a.idapoderado=dt.idapoderado and r.idregistro=dt.idregistro
+         and a.idapoderado<>1 and r.idregistro=',@idregistro,@cadenaLimit);
+prepare sentencia from @consulta;
+execute sentencia;
+DEALLOCATE PREPARE sentencia;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyApoderadoRN`
+--
+
+DROP PROCEDURE IF EXISTS `modifyApoderadoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyApoderadoRN`(in dato int(11), cont int(11))
+BEGIN
+set @idregistro=(select r.idregistro from registro r, detregistro dr where r.idregistro=dr.idregistro and dr.iddetRegistro=dato);
+set @cadenaLimit =concat(' limit ',cont, ',',1);
+set @consulta=
+concat ('select p.dni, p.nombre, p.apellido, p.genero, p.direccion, p.fec_nac, a.nom_apo
+         from persona p, detregistro dt, apoderado a, registro r
+         where p.idpersona=dt.idpersona and a.idapoderado=dt.idapoderado and r.idregistro=dt.idregistro
+         and a.idapoderado<>1 and r.idregistro=',@idregistro,@cadenaLimit);
+prepare sentencia from @consulta;
+execute sentencia;
+DEALLOCATE PREPARE sentencia;
+
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyArchivo`
+--
+
+DROP PROCEDURE IF EXISTS `modifyArchivo`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyArchivo`(in dato int(11))
+BEGIN
+select r.num_acta, a.directorio, s.num_stand, td.nom_doc
+from archivo a, stand s, tipo_doc td, registro r
+where s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=a.idregistro and a.idarchivo=dato;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyFecRD`
+--
+
+DROP PROCEDURE IF EXISTS `modifyFecRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyFecRD`(in iddetreg int(11))
+BEGIN
+set @idregistro=(select idregistro from detregistro where iddetregistro=iddetreg);
+SELECT idregistro, fec_reg, hra_reg, idusuario, idtipo_reg, num_acta, fec_even, TIME_FORMAT(hra_even,'%r')
+FROM registro where idregistro=@idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyFecRM`
+--
+
+DROP PROCEDURE IF EXISTS `modifyFecRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyFecRM`(in iddetreg int(11))
+BEGIN
+set @idregistro=(select idregistro from detregistro where iddetregistro=iddetreg);
+SELECT idregistro, fec_reg, hra_reg, idusuario, idtipo_reg, num_acta, fec_even, TIME_FORMAT(hra_even,'%r')
+FROM registro where idregistro=@idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyRegistroRD`
+--
+
+DROP PROCEDURE IF EXISTS `modifyRegistroRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyRegistroRD`(in dato int(11))
+BEGIN
+select p.nombre, p.apellido, p.dni, p.genero, p.fec_nac, TIME_FORMAT(p.hor_nac,'%r'), p.direccion, tr.nomtpo, r.num_acta, dp.nomdep, pr.nomprov, di.nomdist
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and dr.iddetRegistro=dato;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyRegistroRM`
+--
+
+DROP PROCEDURE IF EXISTS `modifyRegistroRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyRegistroRM`(in iddetRegis int(11), gener varchar(15))
+BEGIN
+set @gen_per=(select p.genero
+from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+and dr.iddetRegistro=iddetRegis);
+
+
+if(@gen_per=gener) then
+  -- Devolvemos todos los datos del Hombre
+  select p.nombre, p.apellido, p.dni, p.genero, p.fec_nac, TIME_FORMAT(p.hor_nac,'%r'), p.direccion, tr.nomtpo, r.num_acta, dp.nomdep, pr.nomprov, dis.nomdist
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and dr.iddetRegistro=iddetRegis;
+else
+  -- Devolvemos todos los datos de la mujer
+  set @numacta=(select r.num_acta
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and dr.iddetRegistro=iddetRegis);
+
+  set @idperso_sposa=(select dr.iddetRegistro
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and r.num_acta=@numacta limit 1,2);
+
+  select p.nombre, p.apellido, p.dni, p.genero, p.fec_nac, TIME_FORMAT(p.hor_nac,'%r'), p.direccion, tr.nomtpo, r.num_acta, dp.nomdep, pr.nomprov, dis.nomdist
+  from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+  where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+  and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2'
+  and dr.iddetRegistro=@idperso_sposa;
+
+end if;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyRegistroRN`
+--
+
+DROP PROCEDURE IF EXISTS `modifyRegistroRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyRegistroRN`(in dato int(11))
+BEGIN
+select p.nombre, p.apellido, p.dni, p.genero, p.fec_nac, TIME_FORMAT(p.hor_nac,'%r'), p.direccion, tr.nomtpo, r.num_acta, dp.nomdep, pr.nomprov, di.nomdist
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and dr.iddetRegistro=dato;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `modifyUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `modifyUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modifyUsuario`(in dato int(11))
+BEGIN
+select p.nombre, p.apellido, p.dni, p.genero, p.fec_nac, TIME_FORMAT(p.hor_nac,'%h:%i %p'), p.direccion, tu.tpusr, u.nom, u.estado
+from usuario u, tipousuario tu, persona p
+where p.idpersona=u.idpersona and tu.idtipousuario=u.idtipousuario and u.idusuario=dato;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchApoderado`
+--
+
+DROP PROCEDURE IF EXISTS `searchApoderado`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchApoderado`(in buscar varchar(45))
+BEGIN
+select * from apoderado where nom_apo like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchArchivoRN`
+--
+
+DROP PROCEDURE IF EXISTS `searchArchivoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchArchivoRN`(in buscar varchar(20))
+BEGIN
+/*
+select a.idarchivo, p.dni, concat(p.apellido,' ',p.nombre) as 'APELLIDOS Y NOMBRES', tr.nomtpo as tipoRegistro, r.num_acta,
+td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and
+(r.num_acta like buscar or td.nom_doc like buscar or s.num_stand like buscar or concat(p.apellido,' ',p.nombre) like buscar or
+p.dni like buscar);
+*/
+
+select a.idarchivo, p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'APELLIDOS Y NOMBRES', tr.nomtpo as tipoRegistro, r.num_acta,
+td.nom_doc as tipoDoc, s.num_stand as numLibro, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and
+(r.num_acta like buscar or td.nom_doc like buscar or s.num_stand like buscar or concat(p.apellido,' ',p.nombre) like buscar or
+p.dni like buscar) group by a.idarchivo;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchArchivosHash`
+--
+
+DROP PROCEDURE IF EXISTS `searchArchivosHash`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchArchivosHash`(in buscar varchar(20))
+BEGIN
+select p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as 'APELLIDOS Y NOMBRES', r.num_acta,
+td.nom_doc as tipoDoc, SUBSTRING_INDEX(a.directorio, '/', -1) as Archivo, e.hassh, a.fecsub,
+TIME_FORMAT(a.hrasub,'%h:%i %p') as hraSubido, u.nom as usuario
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr, encriptacion e, usuario u
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.idarchivo=e.idarchivo and u.idusuario=r.idusuario
+and (p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or tr.nomtpo like buscar or r.num_acta like buscar)
+group by a.idarchivo order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchArchivosImp`
+--
+
+DROP PROCEDURE IF EXISTS `searchArchivosImp`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchArchivosImp`(in buscar varchar(20))
+BEGIN
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta,
+dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg
+and (p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or p.genero like buscar or p.direccion like buscar or
+p.fec_nac like buscar or tr.nomtpo like buscar or r.num_acta like buscar or dis.nomdist like buscar or pr.nomprov like buscar or
+dp.nomdep like buscar)
+group by a.idarchivo
+order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchDetLibro`
+--
+
+DROP PROCEDURE IF EXISTS `searchDetLibro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchDetLibro`(in buscar varchar(20))
+BEGIN
+select dl.iddetalle_libro, tr.nomtpo, s.num_stand from stand s, tipo_reg tr, detalle_libro dl
+where s.idstand=dl.idstand and tr.idtipo_reg=dl.idtipo_reg and (tr.nomtpo like buscar or s.num_stand like buscar);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchPermiso`
+--
+
+DROP PROCEDURE IF EXISTS `searchPermiso`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchPermiso`(in buscar varchar(45))
+BEGIN
+select * from permiso where nom_per like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistroApode`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistroApode`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistroApode`(in buscar varchar(20))
+BEGIN
+select ar.idaporegistro, tr.nomtpo, group_concat(a.nom_apo SEPARATOR ', ') as apoderados
+from apoderado a, tipo_reg tr, aporegistro ar
+where a.idapoderado=ar.idapoderado and tr.idtipo_reg=ar.idtipo_reg and tr.nomtpo like buscar
+group by tr.idtipo_reg;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistroRD`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistroRD`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistroRD`(in buscar varchar(20))
+BEGIN
+select dr.iddetRegistro, p.dni, concat(p.nombre,' ',p.apellido), p.fec_nac, r.num_acta, di.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, r.hra_reg
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='3' and (p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or
+tr.nomtpo like buscar or r.fec_reg like buscar or di.nomdist like buscar or pr.nomprov like buscar or dp.nomdep like buscar or
+r.num_acta like buscar or a.nom_apo like buscar);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistroRM`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistroRM`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistroRM`(in buscar varchar(20))
+BEGIN
+select dr.iddetRegistro, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & ') as Esposos, r.num_acta, dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from persona p, detregistro dr, registro r, tipo_reg tr, detalle_ubicacion du, distrito dis, provincia pr, departamento dp
+where p.idpersona=dr.idpersona and tr.idtipo_reg=r.idtipo_reg and r.idregistro=dr.idregistro and dr.iddetRegistro=du.iddetRegistro
+and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='2' and
+(p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or r.num_acta like buscar or dis.nomdist like buscar or pr.nomprov like buscar or dp.nomdep like buscar)
+group by r.idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistroRN`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistroRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistroRN`(in buscar varchar(20))
+BEGIN
+select dr.iddetRegistro, p.dni, concat(p.nombre,' ',p.apellido), p.fec_nac, r.num_acta, di.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, r.hra_reg
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='1' and (p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or
+tr.nomtpo like buscar or r.fec_reg like buscar or di.nomdist like buscar or pr.nomprov like buscar or dp.nomdep like buscar or
+r.num_acta like buscar or a.nom_apo like buscar);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistroSinArchivoRN`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistroSinArchivoRN`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistroSinArchivoRN`(in buscar varchar(20))
+BEGIN
+select distinct(r.num_acta),
+if (tr.nomtpo='MATRIMONIO',GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '), concat(p.nombre,' ',p.apellido)) as 'Nombres y apellidos', tr.nomtpo,
+(select count(*) from archivo where idregistro=r.idregistro) as 'N° Doc.'
+from persona p inner join detregistro dr on p.idpersona=dr.idpersona inner join registro r on r.idregistro=dr.idregistro
+left join archivo a on r.idregistro=a.idregistro inner join detalle_ubicacion du on dr.iddetRegistro=du.iddetRegistro inner join
+tipo_reg tr on tr.idtipo_reg=r.idtipo_reg
+where (select count(*) from archivo where idregistro=r.idregistro)<3 and (r.num_acta like buscar or
+concat(p.nombre,' ',p.apellido) like buscar or tr.nomtpo like buscar
+or p.dni like buscar) group by r.idregistro;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchRegistrosVal`
+--
+
+DROP PROCEDURE IF EXISTS `searchRegistrosVal`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchRegistrosVal`(in buscar varchar(20))
+BEGIN
+select distinct(dr.iddetRegistro), p.dni, GROUP_CONCAT(concat(p.nombre,' ',p.apellido) SEPARATOR ' & '),p.genero, p.direccion, p.fec_nac, tr.nomtpo, r.num_acta,
+dis.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from archivo a, stand s, registro r, tipo_doc td, detregistro dr, persona p, detalle_ubicacion du, distrito dis, provincia pr,
+departamento dp, tipo_reg tr
+where r.idregistro=a.idregistro and s.idstand=a.idstand and td.idtipo_doc=a.idtipo_doc and r.idregistro=dr.idregistro and
+p.idpersona=dr.idpersona and dr.iddetRegistro=du.iddetRegistro and dis.iddistrito=du.iddistrito and pr.idprovincia=dis.idprovincia
+and dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg=r.idtipo_reg and a.estado=0
+and (p.dni like buscar or concat(p.nombre,' ',p.apellido) like buscar or p.genero like buscar or p.direccion like buscar or
+p.fec_nac like buscar or tr.nomtpo like buscar or r.num_acta like buscar or dis.nomdist like buscar or pr.nomprov like buscar or
+dp.nomdep like buscar)
+group by a.idarchivo
+order by a.idarchivo desc;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchStand`
+--
+
+DROP PROCEDURE IF EXISTS `searchStand`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchStand`(in buscar varchar(45))
+BEGIN
+select * from stand where num_stand like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchTipoDocumento`
+--
+
+DROP PROCEDURE IF EXISTS `searchTipoDocumento`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchTipoDocumento`(in buscar varchar(45))
+BEGIN
+select * from tipo_doc where nom_doc like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchTipoRegistro`
+--
+
+DROP PROCEDURE IF EXISTS `searchTipoRegistro`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchTipoRegistro`(in buscar varchar(45))
+BEGIN
+select * from tipo_reg where nomtpo like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchTipoUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `searchTipoUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchTipoUsuario`(in buscar varchar(45))
+BEGIN
+select * from tipousuario where tpusr like buscar;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchUsuario`
+--
+
+DROP PROCEDURE IF EXISTS `searchUsuario`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchUsuario`(in buscar varchar(45))
+BEGIN
+select u.idusuario, concat(p.apellido,' ',p.nombre) as 'APELLIDOS Y NOMBRES',u.nom, tu.tpusr, tu.idtipousuario, p.idpersona
+from usuario u, tipousuario tu, persona p
+where p.idpersona=u.idpersona and tu.idtipousuario=u.idtipousuario and (concat(p.apellido,' ',p.nombre) like buscar or
+p.dni like buscar or u.nom like buscar or tu.tpusr like buscar);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `searchUsuarioSis`
+--
+
+DROP PROCEDURE IF EXISTS `searchUsuarioSis`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchUsuarioSis`(in buscar varchar(20))
+BEGIN
+select u.idusuario, concat(p.apellido,' ',p.nombre) as 'Apellidos y nombres', u.nom as usuario, tu.tpusr, u.estado
+from usuario u,tipousuario tu, persona p
+where p.idpersona=u.idpersona and tu.idtipousuario=u.idtipousuario and (concat(p.apellido,' ',p.nombre) like buscar or
+u.nom like buscar or tu.tpusr like buscar);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `updateFecMatrimonio`
+--
+
+DROP PROCEDURE IF EXISTS `updateFecMatrimonio`;
+
+DELIMITER $$
+
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateFecMatrimonio`(in feceven date, hraevem time, iddetregz int(11))
+BEGIN
+set @idregistro=(select idregistro from detregistro where iddetregistro=iddetregz);
+update registro set fec_even=feceven, hra_even=hraevem where idregistro=@idregistro;
+select 'Se actualizo satisfactoriamente.';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

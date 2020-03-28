@@ -1,0 +1,12 @@
+Administrador
+****************
+Usuario: aldomar
+Password: aldomar
+
+Empleado
+****************
+Usuario: silva
+Password: admin123
+
+
+Sistema de registro civil para los años anteriores del 2012, para la municipalidad provincial de Huaraz

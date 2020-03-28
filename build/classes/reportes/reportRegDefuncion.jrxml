@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportRegDefuncion" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ff5a3dc4-9c14-408f-a29b-65d33a2e79e0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#6495ED">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFD6FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="RegDef" uuid="f8ccd62c-97f5-4969-9669-d9644d153876">
+		<queryString language="SQL">
+			<![CDATA[select dr.iddetRegistro, p.dni, concat(p.nombre,' ',p.apellido), p.fec_nac, r.num_acta, di.nomdist, pr.nomprov, dp.nomdep, r.fec_reg, TIME_FORMAT(r.hra_reg,'%r')
+from detregistro dr, registro r, tipo_reg tr, apoderado a, persona p, detalle_ubicacion du, distrito di, provincia pr, departamento dp
+where a.idapoderado=dr.idapoderado and p.idpersona=dr.idpersona and r.idregistro=dr.idregistro and tr.idtipo_reg=r.idtipo_reg and
+dr.iddetRegistro=du.iddetRegistro and di.iddistrito=du.iddistrito and pr.idprovincia=di.idprovincia and
+dp.iddepartamento=pr.iddepartamento and tr.idtipo_reg='3';]]>
+		</queryString>
+		<field name="dni" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="concat(p.nombre,&apos; &apos;,p.apellido)" class="java.lang.String"/>
+		<field name="fec_nac" class="java.sql.Date">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="num_acta" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="nomdist" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="nomprov" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="nomdep" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[select curdate();]]>
+	</queryString>
+	<field name="curdate()" class="java.sql.Date"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="207" splitType="Stretch">
+			<staticText>
+				<reportElement x="10" y="146" width="170" height="49" uuid="e2829f77-6eb7-4bb9-bade-8a04d0cda5a3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MUNICIPALIDAD PROVINCIAL DE HUARAZ]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="605" y="175" width="197" height="20" uuid="9102a9bf-0ea8-4ca2-8d43-d89523cd4aa2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="309" y="38" width="322" height="29" forecolor="#666666" uuid="b75dd55e-c093-4f11-8b7b-21dea90c5bae"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SISTEMA DE REGISTRO CIVIL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="67" width="622" height="61" forecolor="#0033FF" uuid="c56d6cdd-29d0-4a61-a31a-20b717087e51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="30" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE REGISTRO DE DEFUNCIÓN]]></text>
+			</staticText>
+			<image>
+				<reportElement x="36" y="10" width="120" height="136" uuid="b2445135-86f1-4272-a3cb-d3f0326edc4d"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="11" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="0" width="802" height="1" uuid="9b415ea9-7a8f-4a85-bba4-bbf4aef2bad2"/>
+			</line>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="85" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" style="table" x="0" y="0" width="802" height="80" uuid="3f934e1c-8e5c-4e44-9377-56829a5d4fdb"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="RegDef" uuid="a6edf55e-9f5f-40eb-93a1-162a70e5025d">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="79" uuid="3ac68a02-e2da-426c-a149-bfb42f26ef6b">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="79" height="30" uuid="a4011e02-9d1c-4585-8fdc-6a0a07283f91"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DNI]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="79" height="20" uuid="418d8f82-c7bb-47dc-b70f-38e574a50623"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{dni}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="201" uuid="e09909ae-8ea1-4ee8-bf61-ee6a4aadbf0b">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="201" height="30" uuid="0458d7b7-befb-417a-bfc6-fc43b1a8e6bf"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="201" height="20" uuid="ec7a0471-3474-4e14-a2c2-918607abddc6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{concat(p.nombre,' ',p.apellido)}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="94" uuid="d7bd38f9-00d2-4d44-9862-24f6895f7a06">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="94" height="30" uuid="0ca3d0d0-9671-422f-809a-f5cbeebe4817"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[FEC. NAC.]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="94" height="20" uuid="622d096c-9a2f-432c-958c-7d16183fc6b6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{fec_nac}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="86" uuid="d3ab29a4-52d1-4314-8a60-d29b1c292763">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="86" height="30" uuid="01eecdd2-48ed-4d59-ae19-fb563d85e3b9"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[N° ACTA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="86" height="20" uuid="16e86456-3dd8-4b7a-b778-ecda721ce8dc"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{num_acta}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="673e4c99-292e-48a5-b015-e61fc236edc3">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" uuid="0963f0e9-a253-4b74-9f66-7dc687639b2e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DISTRITO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="90" height="20" uuid="bae2da6a-1691-4692-8da3-fc021864a12a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nomdist}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="114" uuid="45b21925-7383-4f06-9820-469489f6be17">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="114" height="30" uuid="a641d177-607b-4417-8388-36acad4e86e5"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[PROVINCIA]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="114" height="20" uuid="16e3c61e-e67a-4e43-b75a-3f10310c4c12"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nomprov}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="145" uuid="5b17f5d2-3afc-4c0e-ad5e-b54be4a871e6">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="145" height="30" uuid="19e290f1-987d-4364-aa6f-bb2d74167e18"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="14" isBold="true"/>
+								</textElement>
+								<text><![CDATA[DEPARTAMENTO]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="145" height="20" uuid="67069203-0d41-4a97-9a5d-6a3338476d5a"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="12" isBold="false"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nomdep}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="23" splitType="Stretch">
+			<textField>
+				<reportElement x="685" y="0" width="117" height="20" uuid="88cb099d-8125-413c-82d9-659396a1e620"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
